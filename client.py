@@ -31,11 +31,8 @@ class Client(object):
     def init(self):
         """Initialization before gameplay loop."""
         self.window.show()
-        screen = self.window.screen
-        x = screen.get_width() // 2
-        y = screen.get_height() // 2
-
-        self.engine.entities.append(Player(x - 50, y - 50, 100, 100))
+        self.engine.set_background_rect(self.window.screen.get_rect())
+        self.engine.spawn_players(4)
 
     def loop(self):
         """Gameplay loop."""
