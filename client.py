@@ -1,5 +1,8 @@
-from utils.errors.user_error import UserError
+from engine.game_engine import GameEngine
+from entities.player import Player
 from ui.main_window import MainWindow
+from utils.errors.user_error import UserError
+from utils.layers import Layers
 
 import pygame
 
@@ -8,6 +11,7 @@ class Client(object):
     def __init__(self, width, height, fps):
         pygame.init()
         self.window = MainWindow(position=None, size=(width, height), fps=fps)
+        self.engine = GameEngine()
         self.__running = False
         self.dt = 0
 
@@ -27,6 +31,11 @@ class Client(object):
     def init(self):
         """Initialization before gameplay loop."""
         self.window.show()
+        screen = self.window.screen
+        x = screen.get_width() // 2
+        y = screen.get_height() // 2
+
+        self.engine.entities.append(Player(x - 50, y - 50, 100, 100))
 
     def loop(self):
         """Gameplay loop."""
@@ -46,6 +55,11 @@ class Client(object):
 
     def render(self):
         """Displays the game."""
+        entities = self.engine.entities
+        self.window.fill_background()
+        for layer in Layers:
+            for entitity in entities:
+                entitity.render(self.window.screen, layer)
         self.dt = self.window.update()
 
     def shutdown(self):

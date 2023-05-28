@@ -22,17 +22,12 @@ class MainWindow(Widget):
 
     def update(self):
         """Displays current frame"""
-        self.render()
-
-        for child in self.children.values():
-            child.render()
-
         pygame.display.flip()
         dt = self.clock.tick(self.fps)
         return dt
 
-    def render(self):
-        """Renders only the window background"""
+    def fill_background(self):
+        """Fills the background with color."""
         self.screen.fill('blue')
 
     def close(self):
