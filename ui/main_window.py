@@ -14,11 +14,11 @@ class MainWindow(object):
         self.clock = pygame.time.Clock()
 
     def show(self):
-        """Shows the window"""
+        """Shows the window."""
         self.screen = pygame.display.set_mode(self.size)
 
     def update(self):
-        """Displays current frame"""
+        """Displays current frame."""
         pygame.display.flip()
         dt = self.clock.tick(self.fps)
         return dt
@@ -28,5 +28,5 @@ class MainWindow(object):
         self.screen.fill('blue')
 
     def close(self):
-        """Closes the window"""
+        """Closes the window."""
         pygame.quit()

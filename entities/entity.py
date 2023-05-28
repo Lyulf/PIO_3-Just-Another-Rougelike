@@ -10,5 +10,4 @@ class Entitiy(object):
         """Method responsible for displaying the entity.
         
         Will be overwritten by child classes."""
-
         pass
