@@ -1,16 +1,13 @@
-from widget import Widget
-
 import pygame
 
-class MainWindow(Widget):
+class MainWindow(object):
     """Wrapper for the main window.
 
     Handles displaying the window and all of its elements.
     """
-    def __init__(self, position, size, fps, parent=None):
+    def __init__(self, size, fps):
         pygame.init()
-        super().__init__(position=position, size=size, parent=parent)
-
+        self.size = size
         self.fps = fps
 
         self.screen = None

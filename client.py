@@ -10,7 +10,7 @@ class Client(object):
     """Class handling all gameplay logic."""
     def __init__(self, width, height, fps):
         pygame.init()
-        self.window = MainWindow(position=None, size=(width, height), fps=fps)
+        self.window = MainWindow(size=(width, height), fps=fps)
         self.engine = GameEngine()
         self.__running = False
         self.dt = 0
