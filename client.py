@@ -57,11 +57,13 @@ class Client(object):
             direction.y += 1
         if keys[pygame.K_a]:
             direction.x -= 1
-            direction.normalize_ip()
         if keys[pygame.K_d]:
             direction.x += 1
+        try:
             direction.normalize_ip()
-        self.player.direction = direction
+            self.player.direction = direction
+        except ValueError:
+            self.player.direction = pygame.Vector2()
 
     def update(self):
         """Handles gameplay logic."""
