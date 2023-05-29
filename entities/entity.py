@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-class Entitiy(object):
+class Entity(object):
     """Base class for all entities."""
 
     def __init__(self):

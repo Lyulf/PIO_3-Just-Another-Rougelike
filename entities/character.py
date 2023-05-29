@@ -1,9 +1,9 @@
 import math
 import pygame
 
-from entity import Entitiy
+from entity import Entity
 
-class Character(Entitiy):
+class Character(Entity):
     """Base class for humanoid entities."""
     def __init__(self, x, y, width, height, speed):
         super().__init__()
