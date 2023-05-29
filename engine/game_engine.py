@@ -50,4 +50,6 @@ class GameEngine(object):
         """Advance physics by dt (delta time)."""
         for entity in self.entities:
             entity.move(dt)
+        for entity in self.entities:
+            entity.collide_stage(self.background_rect)
 

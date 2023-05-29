@@ -18,3 +18,8 @@ class Entitiy(object):
         Will be overwritten by child classes."""
         pass
 
+    def collide_stage(stage_rect):
+        """Collides the entity with the stage.
+        
+        Behaviour is decided by child classes that overwritte this method."""
+        pass
