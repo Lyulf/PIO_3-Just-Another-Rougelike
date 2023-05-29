@@ -12,6 +12,7 @@ class Client(object):
         pygame.init()
         self.window = MainWindow(size=(width, height), fps=fps)
         self.engine = GameEngine()
+        self.player = None
         self.__running = False
         self.dt = 0
 
@@ -33,6 +34,8 @@ class Client(object):
         self.window.show()
         self.engine.set_background_rect(self.window.screen.get_rect())
         self.engine.spawn_players(4)
+        # Will be replaced after server is added.
+        self.player = self.engine.entities[0]
 
     def loop(self):
         """Gameplay loop."""
@@ -45,10 +48,26 @@ class Client(object):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.__running = False
+                return
+        keys = pygame.key.get_pressed()
+        direction = pygame.Vector2()
+        if keys[pygame.K_w]:
+            direction.y -= 1
+        if keys[pygame.K_s]:
+            direction.y += 1
+        if keys[pygame.K_a]:
+            direction.x -= 1
+        if keys[pygame.K_d]:
+            direction.x += 1
+        try:
+            direction.normalize_ip()
+            self.player.direction = direction
+        except ValueError:
+            self.player.direction = pygame.Vector2()
 
     def update(self):
         """Handles gameplay logic."""
-        pass
+        self.engine.update(self.dt)
 
     def render(self):
         """Displays the game."""
