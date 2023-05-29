@@ -7,6 +7,7 @@ class GameEngine(object):
     """Class handling game physics."""
     CHARACTER_WIDTH = 50
     CHARACTER_HEIGHT = 100
+    PLAYER_SPEED = 1
 
     def __init__(self):
         self.entities = []
@@ -42,5 +43,11 @@ class GameEngine(object):
             x=x,
             y=y,
             width=self.CHARACTER_WIDTH,
-            height=self.CHARACTER_HEIGHT)
+            height=self.CHARACTER_HEIGHT,
+            speed=self.PLAYER_SPEED)
+
+    def update(self, dt):
+        """Advance physics by dt (delta time)."""
+        for entity in self.entities:
+            entity.move(dt)
 

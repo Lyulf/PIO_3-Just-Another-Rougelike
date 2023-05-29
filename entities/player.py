@@ -5,8 +5,8 @@ from utils.layers import Layers
 
 class Player(Character):
     """Player character."""
-    def __init__(self, x, y, width, height):
-        super().__init__(x, y, width, height)
+    def __init__(self, x, y, width, height, speed):
+        super().__init__(x, y, width, height, speed)
 
     def render(self, surface, layer):
         """Renders the player."""

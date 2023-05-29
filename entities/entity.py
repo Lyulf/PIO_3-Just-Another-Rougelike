@@ -11,3 +11,10 @@ class Entitiy(object):
         
         Will be overwritten by child classes."""
         pass
+
+    def move(dt):
+        """Moves the entity by in time by dt (delta time).
+
+        Will be overwritten by child classes."""
+        pass
+
