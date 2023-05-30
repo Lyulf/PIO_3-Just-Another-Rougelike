@@ -1,5 +1,7 @@
 import pygame
 
+
+
 class MainWindow(object):
     """Wrapper for the main window.
 
@@ -9,7 +11,6 @@ class MainWindow(object):
         pygame.init()
         self.size = size
         self.fps = fps
-
         self.screen = None
         self.clock = pygame.time.Clock()
 
