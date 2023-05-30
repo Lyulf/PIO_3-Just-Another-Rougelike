@@ -1,5 +1,3 @@
-from client import Client
-
+import ui.title_screen
 if __name__ == '__main__':
-    game = Client(1280, 720, 60)
-    game.run()
+    game = ui.title_screen
