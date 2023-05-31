@@ -34,6 +34,7 @@ class Client(object):
         self.window.show()
         self.engine.set_background_rect(self.window.screen.get_rect())
         self.engine.spawn_players(4)
+        self.engine.spawn_opponents(8)
         # Will be replaced after server is added.
         self.player = self.engine.entities[0]
 
@@ -52,7 +53,7 @@ class Client(object):
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_SPACE:
                     projectile = Projectile(self.player.rect.right, self.player.rect.centery, 5, 5, 14)
-                    self.engine.entities.append(projectile)
+                    self.engine.projectiles.append(projectile)
         keys = pygame.key.get_pressed()
         direction = pygame.Vector2()
         if keys[pygame.K_w]:
@@ -76,10 +77,13 @@ class Client(object):
     def render(self):
         """Displays the game."""
         entities = self.engine.entities
+        projectiles = self.engine.projectiles
         self.window.fill_background()
         for layer in Layers:
             for entitity in entities:
                 entitity.render(self.window.screen, layer)
+            for projectile in projectiles:
+                projectile.render(self.window.screen, layer)
         self.dt = self.window.update()
 
     def shutdown(self):
