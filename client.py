@@ -1,5 +1,5 @@
 from engine.game_engine import GameEngine
-from entities.player import Player
+from entities import *
 from ui.main_window import MainWindow
 from utils.errors.user_error import UserError
 from utils.layers import Layers
@@ -50,6 +50,10 @@ class Client(object):
             if event.type == pygame.QUIT:
                 self.__running = False
                 return
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_SPACE:
+                    projectile = Projectile(self.player.rect.right, self.player.rect.centery, 5, 5, 14)
+                    self.engine.entities.append(projectile)
         keys = pygame.key.get_pressed()
         direction = pygame.Vector2()
         if keys[self.custom_keys[0]]: # UP

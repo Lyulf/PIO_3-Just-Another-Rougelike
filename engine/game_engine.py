@@ -52,4 +52,9 @@ class GameEngine(object):
             entity.move(dt)
         for entity in self.entities:
             entity.collide_stage(self.background_rect)
+        loop_nr = 0
+        for entity in self.entities:
+            loop_nr = loop_nr + 1
+            if loop_nr > 4:
+                entity.shoot()
 
