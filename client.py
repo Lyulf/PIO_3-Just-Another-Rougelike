@@ -8,13 +8,14 @@ import pygame
 
 class Client(object):
     """Class handling all gameplay logic."""
-    def __init__(self, width, height, fps):
+    def __init__(self, width, height, fps, custom_keys):
         pygame.init()
         self.window = MainWindow(size=(width, height), fps=fps)
         self.engine = GameEngine()
         self.player = None
         self.__running = False
         self.dt = 0
+        self.custom_keys = custom_keys
 
     def run(self):
         """Starts the game."""
@@ -51,13 +52,13 @@ class Client(object):
                 return
         keys = pygame.key.get_pressed()
         direction = pygame.Vector2()
-        if keys[pygame.K_w]:
+        if keys[self.custom_keys[0]]: # UP
             direction.y -= 1
-        if keys[pygame.K_s]:
-            direction.y += 1
-        if keys[pygame.K_a]:
+        if keys[self.custom_keys[1]]: # LEFT
             direction.x -= 1
-        if keys[pygame.K_d]:
+        if keys[self.custom_keys[2]]: # DOWN
+            direction.y += 1
+        if keys[self.custom_keys[3]]: # RIGHT
             direction.x += 1
         try:
             direction.normalize_ip()
