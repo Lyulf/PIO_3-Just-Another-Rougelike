@@ -8,3 +8,4 @@ from character import *
 from entity import *
 from player import *
 from projectile import *
+from opponent import *
