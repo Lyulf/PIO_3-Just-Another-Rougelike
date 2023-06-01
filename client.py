@@ -52,7 +52,7 @@ class Client(object):
                 self.__running = False
                 return
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
+                if event.key == self.custom_keys[4]:
                     projectile = Projectile(self.player.rect.right, self.player.rect.centery, 5, 5, 14)
                     self.engine.projectiles.append(projectile)
         keys = pygame.key.get_pressed()

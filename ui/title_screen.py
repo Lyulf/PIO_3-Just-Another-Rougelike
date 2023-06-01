@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 
 from ui.button import Button
 from client import Client
@@ -8,15 +9,16 @@ from ui.slider import Slider
 
 pygame.init()
 
-SCREEN = pygame.display.set_mode((1280, 720))
+main_screen = pygame.display.set_mode((1280, 720))
 pygame.display.set_caption("Menu")
 
-BG = pygame.image.load("resources/mainMenu/Background.png")
-PBG = pygame.image.load("resources/mainMenu/Play Background.png")
+background = pygame.image.load("resources/mainMenu/Background.png")
+play_background = pygame.image.load("resources/mainMenu/Play Background.png")
 
-CONTROLS_BUTTON_VALUE = [119, 97, 115, 100]
-FPS_VALUE = [30, 60, 120, 144, 240, 360]
-FPS_CHOICE = 1
+controls_button_value = [119, 97, 115, 100, 32, 101]  # ASCII value of: W, A, S, D, SPACE, E
+fps_value = [30, 60, 120, 144, 240, 360]
+change_button_chars = ['w', 'a', 's', 'd', 'space', 'e']
+fps_choice = 1
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -25,41 +27,41 @@ def get_font(size):  # Returns Press-Start-2P in the desired size
 
 def play():
     while True:
-        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+        play_mouse_pos = pygame.mouse.get_pos()
 
-        SCREEN.blit(PBG, (0, 0))
+        main_screen.blit(play_background, (0, 0))
 
-        PLAY_SINGLEPLAYER = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(320, 260),
+        play_singleplayer = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(320, 260),
                                    text_input="Singleplayer", font=get_font(40), base_color="White",
                                    hovering_color="Green")
 
-        PLAY_SINGLEPLAYER.changeColor(PLAY_MOUSE_POS)
-        PLAY_SINGLEPLAYER.update(SCREEN)
+        play_singleplayer.changeColor(play_mouse_pos)
+        play_singleplayer.update(main_screen)
 
-        PLAY_MULTIPLAYER = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(960, 260),
+        play_multiplayer = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(960, 260),
                                   text_input="Multiplayer", font=get_font(40), base_color="White",
                                   hovering_color="Green")
 
-        PLAY_MULTIPLAYER.changeColor(PLAY_MOUSE_POS)
-        PLAY_MULTIPLAYER.update(SCREEN)
+        play_multiplayer.changeColor(play_mouse_pos)
+        play_multiplayer.update(main_screen)
 
-        PLAY_BACK = Button(image=None, pos=(640, 460),
+        play_back = Button(image=None, pos=(640, 460),
                            text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
+        play_back.changeColor(play_mouse_pos)
+        play_back.update(main_screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                if play_back.checkForInput(play_mouse_pos):
                     main_menu()
-                if PLAY_SINGLEPLAYER.checkForInput(PLAY_MOUSE_POS):
-                    client = Client(1280, 720, FPS_VALUE[FPS_CHOICE], CONTROLS_BUTTON_VALUE)
+                if play_singleplayer.checkForInput(play_mouse_pos):
+                    client = Client(1280, 720, fps_value[fps_choice], controls_button_value)
                     client.run()
-                if PLAY_MULTIPLAYER.checkForInput(PLAY_MOUSE_POS):
+                if play_multiplayer.checkForInput(play_mouse_pos):
                     print('Multiplayer work in progress...')
                     playMultiplayer()
         pygame.display.update()
@@ -67,153 +69,153 @@ def play():
 
 def playMultiplayer():
     while True:
-        PLAY_MOUSE_POS = pygame.mouse.get_pos()
+        play_mouse_pos = pygame.mouse.get_pos()
 
-        SCREEN.blit(PBG, (0, 0))
+        main_screen.blit(play_background, (0, 0))
 
-        HOST_GAME = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(320, 260),
+        host_game = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(320, 260),
                            text_input="Host Game", font=get_font(40), base_color="White",
                            hovering_color="Green")
 
-        HOST_GAME.changeColor(PLAY_MOUSE_POS)
-        HOST_GAME.update(SCREEN)
+        host_game.changeColor(play_mouse_pos)
+        host_game.update(main_screen)
 
-        JOIN_GAME = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(960, 260),
+        join_game = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(960, 260),
                            text_input="Join Game", font=get_font(40), base_color="White",
                            hovering_color="Green")
 
-        JOIN_GAME.changeColor(PLAY_MOUSE_POS)
-        JOIN_GAME.update(SCREEN)
+        join_game.changeColor(play_mouse_pos)
+        join_game.update(main_screen)
 
-        PLAY_BACK = Button(image=None, pos=(640, 460),
+        play_back = Button(image=None, pos=(640, 460),
                            text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
-        PLAY_BACK.changeColor(PLAY_MOUSE_POS)
-        PLAY_BACK.update(SCREEN)
+        play_back.changeColor(play_mouse_pos)
+        play_back.update(main_screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BACK.checkForInput(PLAY_MOUSE_POS):
+                if play_back.checkForInput(play_mouse_pos):
                     play()
-                if HOST_GAME.checkForInput(PLAY_MOUSE_POS):
+                if host_game.checkForInput(play_mouse_pos):
                     print('Work in progress...')  # TODO Host game option
-                if JOIN_GAME.checkForInput(PLAY_MOUSE_POS):
+                if join_game.checkForInput(play_mouse_pos):
                     print('Work in progress...')  # TODO Join game option
 
         pygame.display.update()
 
 
 def options():
-    global FPS_CHOICE
-    MUSIC_SLIDER = Slider(width=200, height=20, x_pos=220, y_pos=265, color="WHITE", active_color="GREEN", value=1)
-    SOUND_EFFECTS_SLIDER = Slider(width=200, height=20, x_pos=220, y_pos=455, color="WHITE", active_color="GREEN",
+    global fps_choice
+    music_slider = Slider(width=200, height=20, x_pos=220, y_pos=265, color="WHITE", active_color="GREEN", value=1)
+    sound_effects_slider = Slider(width=200, height=20, x_pos=220, y_pos=455, color="WHITE", active_color="GREEN",
                                   value=1)
     while True:
-        OPTIONS_MOUSE_POS = pygame.mouse.get_pos()
+        options_mouse_pos = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        main_screen.fill("black")
 
-        OPTIONS_TEXT = get_font(45).render("Options", True, "WHITE")
-        OPTIONS_RECT = OPTIONS_TEXT.get_rect(center=(640, 60))
-        SCREEN.blit(OPTIONS_TEXT, OPTIONS_RECT)
+        options_text = get_font(45).render("Options", True, "WHITE")
+        options_rect = options_text.get_rect(center=(640, 60))
+        main_screen.blit(options_text, options_rect)
 
-        SOUND_TEXT = get_font(50).render("Sound", True, "#b68f40")
-        SOUND_RECT = SOUND_TEXT.get_rect(center=(320, 160))
+        sound_text = get_font(50).render("Sound", True, "#b68f40")
+        sound_rect = sound_text.get_rect(center=(320, 160))
 
-        SCREEN.blit(SOUND_TEXT, SOUND_RECT)
+        main_screen.blit(sound_text, sound_rect)
 
-        MUSIC_TEXT = get_font(25).render("Music", True, "#b68f40")
-        MUSIC_RECT = MUSIC_TEXT.get_rect(center=(320, 230))
+        music_text = get_font(25).render("Music", True, "#b68f40")
+        music_rect = music_text.get_rect(center=(320, 230))
 
-        SCREEN.blit(MUSIC_TEXT, MUSIC_RECT)
+        main_screen.blit(music_text, music_rect)
 
-        MUSIC_SLIDER.draw(SCREEN)
+        music_slider.draw(main_screen)
 
-        MUSIC_VALUE_TEXT = get_font(20).render(str(round(MUSIC_SLIDER.value * 100)) + "%", True, "#b68f40")
-        MUSIC_VALUE_RECT = MUSIC_VALUE_TEXT.get_rect(center=(320, 315))
+        music_value_text = get_font(20).render(str(round(music_slider.value * 100)) + "%", True, "#b68f40")
+        music_value_rect = music_value_text.get_rect(center=(320, 315))
 
-        SCREEN.blit(MUSIC_VALUE_TEXT, MUSIC_VALUE_RECT)
+        main_screen.blit(music_value_text, music_value_rect)
 
-        SOUND_EFFECTS_TEXT = get_font(25).render("Sound effects", True, "#b68f40")
-        SOUND_EFFECTS_RECT = SOUND_EFFECTS_TEXT.get_rect(center=(320, 420))
+        sound_effects_text = get_font(25).render("Sound effects", True, "#b68f40")
+        sound_effects_rect = sound_effects_text.get_rect(center=(320, 420))
 
-        SCREEN.blit(SOUND_EFFECTS_TEXT, SOUND_EFFECTS_RECT)
+        main_screen.blit(sound_effects_text, sound_effects_rect)
 
-        SOUND_EFFECTS_SLIDER.draw(SCREEN)
+        sound_effects_slider.draw(main_screen)
 
-        SOUND_EFFECTS_VALUE_TEXT = get_font(20).render(str(round(SOUND_EFFECTS_SLIDER.value * 100)) + "%", True,
+        sound_effects_value_text = get_font(20).render(str(round(sound_effects_slider.value * 100)) + "%", True,
                                                        "#b68f40")
-        SOUND_EFFECTS_VALUE_RECT = SOUND_EFFECTS_VALUE_TEXT.get_rect(center=(320, 505))
+        sound_effects_value_rect = sound_effects_value_text.get_rect(center=(320, 505))
 
-        SCREEN.blit(SOUND_EFFECTS_VALUE_TEXT, SOUND_EFFECTS_VALUE_RECT)
+        main_screen.blit(sound_effects_value_text, sound_effects_value_rect)
 
-        VIDEO_TEXT = get_font(50).render("Video", True, "#b68f40")
-        VIDEO_RECT = VIDEO_TEXT.get_rect(center=(1040, 160))
+        video_text = get_font(50).render("Video", True, "#b68f40")
+        video_rect = video_text.get_rect(center=(1040, 160))
 
-        SCREEN.blit(VIDEO_TEXT, VIDEO_RECT)
+        main_screen.blit(video_text, video_rect)
 
-        FPS_TEXT = get_font(25).render("FPS", True, "#b68f40")
-        FPS_RECT = FPS_TEXT.get_rect(center=(1040, 230))
-        SCREEN.blit(FPS_TEXT, FPS_RECT)
+        fps_text = get_font(25).render("FPS", True, "#b68f40")
+        fps_rect = fps_text.get_rect(center=(1040, 230))
+        main_screen.blit(fps_text, fps_rect)
 
-        FPS_VALUE_TEXT = get_font(35).render(str(FPS_VALUE[FPS_CHOICE]), True, "#b68f40")
-        FPS_VALUE_RECT = FPS_VALUE_TEXT.get_rect(center=(1040, 290))
-        SCREEN.blit(FPS_VALUE_TEXT, FPS_VALUE_RECT)
+        fps_value_text = get_font(35).render(str(fps_value[fps_choice]), True, "#b68f40")
+        fps_value_rect = fps_value_text.get_rect(center=(1040, 290))
+        main_screen.blit(fps_value_text, fps_value_rect)
 
-        FPS_LEFT = Button(image=pygame.image.load("resources/mainMenu/left_arrow.png"), pos=(940, 288),
+        fps_left = Button(image=pygame.image.load("resources/mainMenu/left_arrow.png"), pos=(940, 288),
                           text_input="", font=get_font(10), base_color="White", hovering_color="Green")
-        FPS_LEFT.update(SCREEN)
+        fps_left.update(main_screen)
 
-        FPS_RIGHT = Button(image=pygame.image.load("resources/mainMenu/right_arrow.png"), pos=(1140, 288),
+        fps_right = Button(image=pygame.image.load("resources/mainMenu/right_arrow.png"), pos=(1140, 288),
                            text_input="", font=get_font(10), base_color="White", hovering_color="Green")
-        FPS_RIGHT.update(SCREEN)
+        fps_right.update(main_screen)
 
-        CONTROLS = Button(image=None, pos=(1040, 455),
-                          text_input="Controls", font=get_font(35), base_color="#b68f40", hovering_color="Green")
+        controls_text = Button(image=None, pos=(1040, 455),
+                               text_input="Controls", font=get_font(35), base_color="#b68f40", hovering_color="Green")
 
-        CONTROLS.changeColor(OPTIONS_MOUSE_POS)
-        CONTROLS.update(SCREEN)
+        controls_text.changeColor(options_mouse_pos)
+        controls_text.update(main_screen)
 
-        OPTIONS_BACK = Button(image=None, pos=(640, 660),
+        options_back = Button(image=None, pos=(640, 660),
                               text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
-        OPTIONS_BACK.changeColor(OPTIONS_MOUSE_POS)
-        OPTIONS_BACK.update(SCREEN)
+        options_back.changeColor(options_mouse_pos)
+        options_back.update(main_screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if CONTROLS.checkForInput(OPTIONS_MOUSE_POS):
+                if controls_text.checkForInput(options_mouse_pos):
                     controls()
-                if OPTIONS_BACK.checkForInput(OPTIONS_MOUSE_POS):
+                if options_back.checkForInput(options_mouse_pos):
                     main_menu()
-                if FPS_RIGHT.checkForInput(OPTIONS_MOUSE_POS):
-                    if FPS_CHOICE == 5:
-                        FPS_CHOICE = 0
+                if fps_right.checkForInput(options_mouse_pos):
+                    if fps_choice == 5:
+                        fps_choice = 0
                     else:
-                        FPS_CHOICE += 1
-                if FPS_LEFT.checkForInput(OPTIONS_MOUSE_POS):
-                    if FPS_CHOICE == 0:
-                        FPS_CHOICE = 5
+                        fps_choice += 1
+                if fps_left.checkForInput(options_mouse_pos):
+                    if fps_choice == 0:
+                        fps_choice = 5
                     else:
-                        FPS_CHOICE -= 1
-                if MUSIC_SLIDER.rect.collidepoint(OPTIONS_MOUSE_POS):
-                    MUSIC_SLIDER.active = True
-                if SOUND_EFFECTS_SLIDER.rect.collidepoint(OPTIONS_MOUSE_POS):
-                    SOUND_EFFECTS_SLIDER.active = True
+                        fps_choice -= 1
+                if music_slider.rect.collidepoint(options_mouse_pos):
+                    music_slider.active = True
+                if sound_effects_slider.rect.collidepoint(options_mouse_pos):
+                    sound_effects_slider.active = True
             elif event.type == pygame.MOUSEBUTTONUP:
-                MUSIC_SLIDER.active = False
-                SOUND_EFFECTS_SLIDER.active = False
+                music_slider.active = False
+                sound_effects_slider.active = False
             elif event.type == pygame.MOUSEMOTION:
-                if MUSIC_SLIDER.active:
-                    MUSIC_SLIDER.update_slider_value(event.pos[0])
-                if SOUND_EFFECTS_SLIDER.active:
-                    SOUND_EFFECTS_SLIDER.update_slider_value(event.pos[0])
+                if music_slider.active:
+                    music_slider.update_slider_value(event.pos[0])
+                if sound_effects_slider.active:
+                    sound_effects_slider.update_slider_value(event.pos[0])
         pygame.display.update()
 
 
@@ -239,173 +241,168 @@ class ExclusiveBooleanArray:
 
         return self.array[index]
 
+    def __iter__(self):
+        return iter(self.array)
+
 
 def controls():
-    global CONTROLS_BUTTON_VALUE
-    CONTROLS_ISPRESSED = ExclusiveBooleanArray(4)
-    CHANGE_BUTTON_CHARS = ['w', 'a', 's', 'd']
-    CHANGE_BUTTON_FONT_SIZE = [40, 40, 40, 40]
+    global controls_button_value
+    controls_ispressed = ExclusiveBooleanArray(6)
+    global change_button_chars
+    change_button_font_size = [40] * 6
+    backup_change_char = 'W'
     while True:
-        CONTROLS_MOUSE_POS = pygame.mouse.get_pos()
+        controls_mouse_pos = pygame.mouse.get_pos()
 
-        SCREEN.fill("black")
+        main_screen.fill("black")
 
-        CONTROLS_TEXT = get_font(45).render("Controls", True, "WHITE")
-        CONTROLS_RECT = CONTROLS_TEXT.get_rect(center=(640, 60))
-        SCREEN.blit(CONTROLS_TEXT, CONTROLS_RECT)
+        controls_text = get_font(45).render("Controls", True, "WHITE")
+        controls_rect = controls_text.get_rect(center=(640, 60))
+        main_screen.blit(controls_text, controls_rect)
 
-        UP_TEXT = get_font(25).render("UP:", True, "#b68f40")
-        UP_RECT = UP_TEXT.get_rect(center=(260, 230))
+        up_change_button = draw_text_and_button(screen=main_screen, text="UP:", position=(260, 230),
+                                                font_size=25, button_pos=(460, 230), button_index=0,
+                                                controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
+                                                button_font_size=change_button_font_size)
 
-        SCREEN.blit(UP_TEXT, UP_RECT)
+        left_change_button = draw_text_and_button(screen=main_screen, text="LEFT:", position=(260, 330),
+                                                  font_size=25, button_pos=(460, 330), button_index=1,
+                                                  controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
+                                                  button_font_size=change_button_font_size)
 
-        UP_CHANGE_BUTTON = Button(image=None, pos=(460, 230),
-                                  text_input=CHANGE_BUTTON_CHARS[0], font=get_font(CHANGE_BUTTON_FONT_SIZE[0]),
-                                  base_color="White", hovering_color="Green")
-        UP_CHANGE_BUTTON.isPressed = CONTROLS_ISPRESSED.is_true(0)
+        down_change_button = draw_text_and_button(screen=main_screen, text="DOWN:", position=(260, 430),
+                                                  font_size=25, button_pos=(460, 430), button_index=2,
+                                                  controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
+                                                  button_font_size=change_button_font_size)
 
-        UP_CHANGE_BUTTON.changeColor(CONTROLS_MOUSE_POS)
-        UP_CHANGE_BUTTON.update(SCREEN)
+        right_change_button = draw_text_and_button(screen=main_screen, text="RIGHT:", position=(260, 530),
+                                                   font_size=25, button_pos=(460, 530), button_index=3,
+                                                   controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
+                                                   button_font_size=change_button_font_size)
 
-        LEFT_TEXT = get_font(25).render("LEFT:", True, "#b68f40")
-        LEFT_RECT = LEFT_TEXT.get_rect(center=(260, 330))
+        shoot_change_button = draw_text_and_button(screen=main_screen, text="SHOOT:", position=(760, 330),
+                                                   font_size=25, button_pos=(960, 330), button_index=4,
+                                                   controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
+                                                   button_font_size=change_button_font_size)
 
-        SCREEN.blit(LEFT_TEXT, LEFT_RECT)
+        use_change_button = draw_text_and_button(screen=main_screen, text="USE:", position=(760, 430),
+                                                   font_size=25, button_pos=(960, 430), button_index=5,
+                                                   controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
+                                                   button_font_size=change_button_font_size)
 
-        LEFT_CHANGE_BUTTON = Button(image=None, pos=(460, 330),
-                                    text_input=CHANGE_BUTTON_CHARS[1], font=get_font(CHANGE_BUTTON_FONT_SIZE[1]),
-                                    base_color="White",
-                                    hovering_color="Green")
-        LEFT_CHANGE_BUTTON.isPressed = CONTROLS_ISPRESSED.is_true(1)
-
-        LEFT_CHANGE_BUTTON.changeColor(CONTROLS_MOUSE_POS)
-        LEFT_CHANGE_BUTTON.update(SCREEN)
-
-        DOWN_TEXT = get_font(25).render("DOWN:", True, "#b68f40")
-        DOWN_RECT = DOWN_TEXT.get_rect(center=(260, 430))
-
-        SCREEN.blit(DOWN_TEXT, DOWN_RECT)
-
-        DOWN_CHANGE_BUTTON = Button(image=None, pos=(460, 430),
-                                    text_input=CHANGE_BUTTON_CHARS[2], font=get_font(CHANGE_BUTTON_FONT_SIZE[2]),
-                                    base_color="White",
-                                    hovering_color="Green")
-        DOWN_CHANGE_BUTTON.isPressed = CONTROLS_ISPRESSED.is_true(2)
-
-        DOWN_CHANGE_BUTTON.changeColor(CONTROLS_MOUSE_POS)
-        DOWN_CHANGE_BUTTON.update(SCREEN)
-
-        RIGHT_TEXT = get_font(25).render("RIGHT:", True, "#b68f40")
-        RIGHT_RECT = RIGHT_TEXT.get_rect(center=(260, 530))
-
-        SCREEN.blit(RIGHT_TEXT, RIGHT_RECT)
-
-        RIGHT_CHANGE_BUTTON = Button(image=None, pos=(460, 530),
-                                     text_input=CHANGE_BUTTON_CHARS[3], font=get_font(CHANGE_BUTTON_FONT_SIZE[3]),
-                                     base_color="White",
-                                     hovering_color="Green")
-        RIGHT_CHANGE_BUTTON.isPressed = CONTROLS_ISPRESSED.is_true(3)
-
-        RIGHT_CHANGE_BUTTON.changeColor(CONTROLS_MOUSE_POS)
-        RIGHT_CHANGE_BUTTON.update(SCREEN)
-
-        CONTROLS_BACK = Button(image=None, pos=(640, 660),
+        controls_back = Button(image=None, pos=(640, 660),
                                text_input="BACK", font=get_font(75), base_color="White", hovering_color="Green")
 
-        CONTROLS_BACK.changeColor(CONTROLS_MOUSE_POS)
-        CONTROLS_BACK.update(SCREEN)
+        controls_back.changeColor(controls_mouse_pos)
+        controls_back.update(main_screen)
 
-        for event in pygame.event.get(): #TODO zrobić żeby tylko jeden przycisk naraz moglbyc mapowany i zeby nie mozna bylo zostawic press any button
+        buttons_variables = [
+            (up_change_button, 0),
+            (left_change_button, 1),
+            (down_change_button, 2),
+            (right_change_button, 3),
+            (shoot_change_button, 4),
+            (use_change_button, 5)
+        ]
+
+        for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if CONTROLS_BACK.checkForInput(CONTROLS_MOUSE_POS):
-                    options()
-                if UP_CHANGE_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
-                    CONTROLS_ISPRESSED.set_true(0)
-                    CHANGE_BUTTON_CHARS[0] = 'Press any button'
-                    CHANGE_BUTTON_FONT_SIZE[0] = 10
-                elif LEFT_CHANGE_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
-                    CONTROLS_ISPRESSED.set_true(1)
-                    CHANGE_BUTTON_CHARS[1] = 'Press any button'
-                    CHANGE_BUTTON_FONT_SIZE[1] = 10
-                elif DOWN_CHANGE_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
-                    CONTROLS_ISPRESSED.set_true(2)
-                    CHANGE_BUTTON_CHARS[2] = 'Press any button'
-                    CHANGE_BUTTON_FONT_SIZE[2] = 10
-                elif RIGHT_CHANGE_BUTTON.checkForInput(CONTROLS_MOUSE_POS):
-                    CONTROLS_ISPRESSED.set_true(3)
-                    CHANGE_BUTTON_CHARS[3] = 'Press any button'
-                    CHANGE_BUTTON_FONT_SIZE[3] = 10
-            elif UP_CHANGE_BUTTON.isPressed:
-                if event.type == pygame.KEYDOWN:
-                    text = pygame.key.name(event.key)  # Get the name of the pressed key
-                    print(f"Button {text} pressed")
-                    CHANGE_BUTTON_FONT_SIZE[0] = 40
-                    CHANGE_BUTTON_CHARS[0] = text
-                    CONTROLS_BUTTON_VALUE[0] = event.key
-                    CONTROLS_ISPRESSED.set_false()
-            elif LEFT_CHANGE_BUTTON.isPressed:
-                if event.type == pygame.KEYDOWN:
-                    text = pygame.key.name(event.key)  # Get the name of the pressed key
-                    print(f"Button {text} pressed")
-                    CHANGE_BUTTON_FONT_SIZE[1] = 40
-                    CHANGE_BUTTON_CHARS[1] = text
-                    CONTROLS_BUTTON_VALUE[1] = event.key
-                    CONTROLS_ISPRESSED.set_false()
-            elif DOWN_CHANGE_BUTTON.isPressed:
-                if event.type == pygame.KEYDOWN:
-                    text = pygame.key.name(event.key)  # Get the name of the pressed key
-                    print(f"Button {text} pressed")
-                    CHANGE_BUTTON_FONT_SIZE[2] = 40
-                    CHANGE_BUTTON_CHARS[2] = text
-                    CONTROLS_BUTTON_VALUE[2] = event.key
-                    CONTROLS_ISPRESSED.set_false()
-            elif RIGHT_CHANGE_BUTTON.isPressed:
-                if event.type == pygame.KEYDOWN:
-                    text = pygame.key.name(event.key)  # Get the name of the pressed key
-                    print(f"Button {text} pressed")
-                    CHANGE_BUTTON_FONT_SIZE[3] = 40
-                    CHANGE_BUTTON_CHARS[3] = text
-                    CONTROLS_BUTTON_VALUE[3] = event.key
-                    CONTROLS_ISPRESSED.set_false()
+                if controls_back.checkForInput(controls_mouse_pos):
+                    if all(value is False for value in controls_ispressed):
+                        options()
+                    else:
+                        main_screen.fill('BLACK')
+                        warning_text = get_font(35).render("You have to assign a button first!", True, "WHITE")
+                        warning_rect = warning_text.get_rect(center=(640, 360))
+                        main_screen.blit(warning_text, warning_rect)
+                        pygame.display.update()
+                        time.sleep(1.5)
+                for button, index in buttons_variables:
+                    if button.checkForInput(controls_mouse_pos):
+                        if all(value != 'Press any button' for value in change_button_chars):
+                            backup_change_char = change_button_chars[index]
+                            controls_ispressed.set_true(index)
+                            change_button_chars[index] = 'Press any button'
+                            change_button_font_size[index] = 10
+            elif event.type == pygame.KEYDOWN:
+                for button, index in buttons_variables:
+                    if button.isPressed:
+                        text = pygame.key.name(event.key)
+                        print(f"Button {text} pressed")
+                        if all(value != text for value in change_button_chars):
+                            change_button_font_size[index] = 40
+                            change_button_chars[index] = text
+                            controls_button_value[index] = event.key
+                            controls_ispressed.set_false()
+                        else:
+                            change_button_chars[index] = backup_change_char
+                            already_used_button()
 
         pygame.display.update()
 
 
+def draw_text_and_button(screen, text, position, font_size, button_pos, button_index, controls_pressed, mouse_pos,
+                         button_font_size):
+    text_surface = get_font(font_size).render(text, True, "#b68f40")
+    text_rect = text_surface.get_rect(center=position)
+
+    screen.blit(text_surface, text_rect)
+
+    button = Button(image=None, pos=button_pos, text_input=change_button_chars[button_index],
+                    font=get_font(button_font_size[button_index]), base_color="White", hovering_color="Green")
+    button.isPressed = controls_pressed.is_true(button_index)
+
+    button.changeColor(mouse_pos)
+    button.update(screen)
+
+    return button
+
+
+def already_used_button():
+    main_screen.fill('BLACK')
+    warning_text = get_font(35).render("That button is already assigned!", True, "WHITE")
+    warning_rect = warning_text.get_rect(center=(640, 360))
+    main_screen.blit(warning_text, warning_rect)
+    pygame.display.update()
+    time.sleep(1.5)
+    controls()
+
+
 def main_menu():
     while True:
-        SCREEN.blit(BG, (0, 0))
+        main_screen.blit(background, (0, 0))
 
-        MENU_MOUSE_POS = pygame.mouse.get_pos()
+        menu_mouse_pos = pygame.mouse.get_pos()
 
-        MENU_TEXT = get_font(50).render("Just another Rougelike", True, "#b68f40")
-        MENU_RECT = MENU_TEXT.get_rect(center=(640, 100))
+        menu_text = get_font(50).render("Just another Rougelike", True, "#b68f40")
+        menu_rect = menu_text.get_rect(center=(640, 100))
 
-        PLAY_BUTTON = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(640, 250),
+        play_button = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(640, 250),
                              text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        OPTIONS_BUTTON = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(640, 400),
+        options_button = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(640, 400),
                                 text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        QUIT_BUTTON = Button(image=pygame.image.load("resources/mainMenu/Quit Rect.png"), pos=(640, 550),
+        quit_button = Button(image=pygame.image.load("resources/mainMenu/Quit Rect.png"), pos=(640, 550),
                              text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
-        SCREEN.blit(MENU_TEXT, MENU_RECT)
+        main_screen.blit(menu_text, menu_rect)
 
-        for button in [PLAY_BUTTON, OPTIONS_BUTTON, QUIT_BUTTON]:
-            button.changeColor(MENU_MOUSE_POS)
-            button.update(SCREEN)
+        for button in [play_button, options_button, quit_button]:
+            button.changeColor(menu_mouse_pos)
+            button.update(main_screen)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
-                if PLAY_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if play_button.checkForInput(menu_mouse_pos):
                     play()
-                if OPTIONS_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if options_button.checkForInput(menu_mouse_pos):
                     options()
-                if QUIT_BUTTON.checkForInput(MENU_MOUSE_POS):
+                if quit_button.checkForInput(menu_mouse_pos):
                     pygame.quit()
                     sys.exit()
 
