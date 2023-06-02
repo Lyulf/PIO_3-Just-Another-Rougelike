@@ -4,6 +4,7 @@ from ui.main_window import MainWindow
 from utils.errors.user_error import UserError
 from utils.layers import Layers
 
+
 import pygame
 
 class Client(object):
@@ -59,12 +60,17 @@ class Client(object):
         direction = pygame.Vector2()
         if keys[self.custom_keys[0]]: # UP
             direction.y -= 1
+            self.player.change_animation('up')
+        if keys[self.custom_keys[2]]:  # DOWN
+            direction.y += 1
+            self.player.change_animation('down')
         if keys[self.custom_keys[1]]: # LEFT
             direction.x -= 1
-        if keys[self.custom_keys[2]]: # DOWN
-            direction.y += 1
+            self.player.change_animation('left')
         if keys[self.custom_keys[3]]: # RIGHT
             direction.x += 1
+            self.player.change_animation('right')
+
         try:
             direction.normalize_ip()
             self.player.direction = direction
