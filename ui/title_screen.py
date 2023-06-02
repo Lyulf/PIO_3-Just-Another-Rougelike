@@ -14,6 +14,11 @@ pygame.display.set_caption("Menu")
 
 background = pygame.image.load("resources/mainMenu/Background.png")
 play_background = pygame.image.load("resources/mainMenu/Play Background.png")
+options_image = pygame.image.load("resources/mainMenu/Options Rect.png")
+play_image = pygame.image.load("resources/mainMenu/Play Rect.png")
+left_arrow_image = pygame.image.load("resources/mainMenu/left_arrow.png")
+right_arrow_image = pygame.image.load("resources/mainMenu/right_arrow.png")
+quit_image = pygame.image.load("resources/mainMenu/Quit Rect.png")
 
 controls_button_value = [119, 97, 115, 100, 32, 101]  # ASCII value of: W, A, S, D, SPACE, E
 fps_value = [30, 60, 120, 144, 240, 360]
@@ -31,14 +36,14 @@ def play():
 
         main_screen.blit(play_background, (0, 0))
 
-        play_singleplayer = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(320, 260),
+        play_singleplayer = Button(image=options_image, pos=(320, 260),
                                    text_input="Singleplayer", font=get_font(40), base_color="White",
                                    hovering_color="Green")
 
         play_singleplayer.changeColor(play_mouse_pos)
         play_singleplayer.update(main_screen)
 
-        play_multiplayer = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(960, 260),
+        play_multiplayer = Button(image=options_image, pos=(960, 260),
                                   text_input="Multiplayer", font=get_font(40), base_color="White",
                                   hovering_color="Green")
 
@@ -73,14 +78,14 @@ def playMultiplayer():
 
         main_screen.blit(play_background, (0, 0))
 
-        host_game = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(320, 260),
+        host_game = Button(image=play_image, pos=(320, 260),
                            text_input="Host Game", font=get_font(40), base_color="White",
                            hovering_color="Green")
 
         host_game.changeColor(play_mouse_pos)
         host_game.update(main_screen)
 
-        join_game = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(960, 260),
+        join_game = Button(image=play_image, pos=(960, 260),
                            text_input="Join Game", font=get_font(40), base_color="White",
                            hovering_color="Green")
 
@@ -165,11 +170,11 @@ def options():
         fps_value_rect = fps_value_text.get_rect(center=(1040, 290))
         main_screen.blit(fps_value_text, fps_value_rect)
 
-        fps_left = Button(image=pygame.image.load("resources/mainMenu/left_arrow.png"), pos=(940, 288),
+        fps_left = Button(image=left_arrow_image, pos=(940, 288),
                           text_input="", font=get_font(10), base_color="White", hovering_color="Green")
         fps_left.update(main_screen)
 
-        fps_right = Button(image=pygame.image.load("resources/mainMenu/right_arrow.png"), pos=(1140, 288),
+        fps_right = Button(image=right_arrow_image, pos=(1140, 288),
                            text_input="", font=get_font(10), base_color="White", hovering_color="Green")
         fps_right.update(main_screen)
 
@@ -380,11 +385,11 @@ def main_menu():
         menu_text = get_font(50).render("Just another Rougelike", True, "#b68f40")
         menu_rect = menu_text.get_rect(center=(640, 100))
 
-        play_button = Button(image=pygame.image.load("resources/mainMenu/Play Rect.png"), pos=(640, 250),
+        play_button = Button(image=play_image, pos=(640, 250),
                              text_input="PLAY", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        options_button = Button(image=pygame.image.load("resources/mainMenu/Options Rect.png"), pos=(640, 400),
+        options_button = Button(image=options_image, pos=(640, 400),
                                 text_input="OPTIONS", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
-        quit_button = Button(image=pygame.image.load("resources/mainMenu/Quit Rect.png"), pos=(640, 550),
+        quit_button = Button(image=quit_image, pos=(640, 550),
                              text_input="QUIT", font=get_font(75), base_color="#d7fcd4", hovering_color="White")
 
         main_screen.blit(menu_text, menu_rect)
