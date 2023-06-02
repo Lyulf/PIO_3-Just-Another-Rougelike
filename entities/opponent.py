@@ -26,7 +26,7 @@ class Opponent(Character):
         'walk' : ui.spritesheet.SpriteSheet(self.walk_sprite, 256, 256, 100, 1, False),
         'hurt' : ui.spritesheet.SpriteSheet(self.hurt_sprite, 256, 256, 100, 1, False),
         'attack' : ui.spritesheet.SpriteSheet(self.attack_sprite, 256, 256, 100, 1, False),
-        'death' : ui.spritesheet.SpriteSheet(self.death_sprite, 256, 256, 100, 1, False)
+        'death' : ui.spritesheet.SpriteSheet(self.death_sprite, 256, 256, 100, 1, False),
         }
 
         self.sprite_sheet = self.sprite_sheets['idle']

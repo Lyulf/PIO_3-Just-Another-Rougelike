@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 class SpriteSheet:
-    def __init__(self, image_path, sprite_width, sprite_height, animation_speed, scale, random_color=False, old_color=None, new_color=None):
+    def __init__(self, image, sprite_width, sprite_height, animation_speed, scale, random_color=False, old_color=None, new_color=None):
         self.sprite_width = sprite_width
         self.sprite_height = sprite_height
         self.animation_speed = animation_speed
@@ -12,7 +12,7 @@ class SpriteSheet:
         self.new_color = new_color
 
         # Load the sprite sheet image
-        self.sprite_sheet = image_path
+        self.sprite_sheet = image
         if random_color:
             self.sprite_sheet = self.change_color(self.sprite_sheet, self.old_color, self.new_color)
             self.sprite_sheet.set_colorkey('Black')

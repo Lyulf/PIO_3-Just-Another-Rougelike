@@ -31,7 +31,7 @@ class Player(Character):
             'left' : ui.spritesheet.SpriteSheet(self.left_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
             'right' : ui.spritesheet.SpriteSheet(self.right_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
             'down' : ui.spritesheet.SpriteSheet(self.down_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
-            'up' : ui.spritesheet.SpriteSheet(self.up_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color)
+            'up' : ui.spritesheet.SpriteSheet(self.up_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
         }
         self.sprite_sheet = self.sprite_sheets['idle']
 
@@ -45,11 +45,4 @@ class Player(Character):
                 self.sprite_sheet = self.sprite_sheets['idle']
 
     def change_animation(self, key):
-        if key == 'right':
-            self.sprite_sheet = self.sprite_sheets['right']
-        elif key == 'left':
-            self.sprite_sheet = self.sprite_sheets['left']
-        elif key == 'up':
-            self.sprite_sheet = self.sprite_sheets['up']
-        elif key == 'down':
-            self.sprite_sheet = self.sprite_sheets['down']
+        self.sprite_sheet = self.sprite_sheets[key]
