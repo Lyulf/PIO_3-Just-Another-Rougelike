@@ -12,7 +12,7 @@ class SpriteSheet:
         self.new_color = new_color
 
         # Load the sprite sheet image
-        self.sprite_sheet = pygame.image.load(image_path).convert_alpha()
+        self.sprite_sheet = image_path
         if random_color:
             self.sprite_sheet = self.change_color(self.sprite_sheet, self.old_color, self.new_color)
             self.sprite_sheet.set_colorkey('Black')
@@ -38,7 +38,7 @@ class SpriteSheet:
 
         # Update the current frame if enough time has passed
         if current_time - self.last_update_time > self.animation_speed:
-            self.current_frame = (self.current_frame + 1) % len(self.sprites)
+            self.current_frame = (current_time // self.animation_speed) % len(self.sprites)
             self.last_update_time = current_time
         if self.current_frame + 1 == len(self.sprites):
             self.is_finished = True

@@ -61,12 +61,12 @@ class Client(object):
         if keys[self.custom_keys[0]]: # UP
             direction.y -= 1
             self.player.change_animation('up')
+        if keys[self.custom_keys[2]]:  # DOWN
+            direction.y += 1
+            self.player.change_animation('down')
         if keys[self.custom_keys[1]]: # LEFT
             direction.x -= 1
             self.player.change_animation('left')
-        if keys[self.custom_keys[2]]: # DOWN
-            direction.y += 1
-            self.player.change_animation('down')
         if keys[self.custom_keys[3]]: # RIGHT
             direction.x += 1
             self.player.change_animation('right')
