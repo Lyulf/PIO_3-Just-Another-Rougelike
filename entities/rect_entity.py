@@ -42,3 +42,14 @@ class RectEntity(Entity):
                 character.change_animation('hurt')
                 character.get_hurt(1, character)
 
+    def collide_with_map(self, projectile, projectiles, stage_rect):
+        if projectile.rect.x <= (stage_rect.left + 0.077*stage_rect.width):
+            projectiles.remove(projectile)
+        elif projectile.rect.x >= (stage_rect.right - 0.2645*stage_rect.width):
+            projectiles.remove(projectile)
+
+        """ Do dodania jak bedzie mozna strzelac we wszystkie strony """
+        # if projectile.rect.y <= (stage_rect.top + 0.125*stage_rect.height):
+        #     projectiles.remove(projectile)
+        # elif projectile.rect.y >= (stage_rect.bottom - 0.125*stage_rect.height):
+        #     projectiles.remove(projectile)

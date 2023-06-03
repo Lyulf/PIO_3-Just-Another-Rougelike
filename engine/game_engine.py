@@ -87,6 +87,7 @@ class GameEngine(object):
         loop_nr = 0
         for projectile in self.projectiles:
             projectile.shoot()
+            projectile.collide_with_map(projectile, self.projectiles, self.background_rect)
             for character in self.entities:
                 character.search_for_impact(projectile, character, self.projectiles)
         for character in self.entities:
