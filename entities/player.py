@@ -20,9 +20,11 @@ class Player(Character):
             cls.right_sprite = pygame.image.load("resources/playerModel/right.png")
             cls.down_sprite = pygame.image.load("resources/playerModel/down.png")
             cls.up_sprite = pygame.image.load("resources/playerModel/up.png")
+            cls.death_sprite = pygame.image.load("resources/playerModel/death.png")
+            cls.hurt_sprite = pygame.image.load("resources/playerModel/hurt.png")
 
-    def __init__(self, x, y, width, height, speed):
-        super().__init__(x, y, width, height, speed)
+    def __init__(self, x, y, width, height, speed, hp):
+        super().__init__(x, y, width, height, speed, hp)
         self.load_images()
         self.old_color = pygame.Color(246, 187, 148)
         self.new_color = pygame.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -32,6 +34,8 @@ class Player(Character):
             'right' : ui.spritesheet.SpriteSheet(self.right_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
             'down' : ui.spritesheet.SpriteSheet(self.down_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
             'up' : ui.spritesheet.SpriteSheet(self.up_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
+            'death' : ui.spritesheet.SpriteSheet(self.death_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
+            'hurt' : ui.spritesheet.SpriteSheet(self.hurt_sprite, 16, 16, 250, 6, True, self.old_color, self.new_color),
         }
         self.sprite_sheet = self.sprite_sheets['idle']
 
@@ -41,6 +45,8 @@ class Player(Character):
 
             self.sprite_sheet.animate(surface, self.rect)  # Animate and draw the sprite
             if self.sprite_sheet.is_finished:
+                if self.sprite_sheet == self.sprite_sheets['death']:
+                    self.hp = -1
                 self.sprite_sheet.is_finished = False
                 self.sprite_sheet = self.sprite_sheets['idle']
 
