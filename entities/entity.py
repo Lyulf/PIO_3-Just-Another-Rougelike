@@ -13,13 +13,13 @@ class Entity(object):
         Will be overwritten by child classes."""
         pass
 
-    def move(dt):
+    def move(self, dt):
         """Moves the entity by in time by dt (delta time).
 
         Will be overwritten by child classes."""
         pass
 
-    def collide_stage(stage_rect):
+    def collide_stage(self, stage_rect):
         """Collides the entity with the stage.
 
         Behaviour is decided by child classes that overwritte this method."""

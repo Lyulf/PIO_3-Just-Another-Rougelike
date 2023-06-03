@@ -25,8 +25,10 @@ class MainWindow(object):
         return dt
 
     def fill_background(self):
-        """Fills the background with color."""
-        self.screen.fill('blue')
+        self.screen.fill((220, 220, 220))
+        image = pygame.image.load("resources\Map\plansza.png")
+        scaled_image = pygame.transform.scale(image, self.size)
+        self.screen.blit(scaled_image, (0, 0))
 
     def close(self):
         """Closes the window."""
