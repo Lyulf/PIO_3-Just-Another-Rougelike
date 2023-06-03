@@ -160,6 +160,9 @@ class GameEngine(object):
 
     def update(self):
         """Update systems"""
+        for dead_entity in self.entity_manager.garbage_collect_entities():
+            self.component_manager.remove_components(dead_entity)
+
         for system in self.system_manager.get_systems():
             system.on_update()
 

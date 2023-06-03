@@ -24,6 +24,12 @@ class EntityManager(object):
             pass
         return None
 
+    def garbage_collect_entities(self):
+        dead_entities = [entity for entity in self.entities.values() if not entity.is_alive]
+        for entity in dead_entities:
+            self.remove_entity(entity.id)
+            yield entity
+
     def remove_entity(self, id: uuid.UUID):
         try:
             del self.entities[id]
