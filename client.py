@@ -3,7 +3,7 @@ from entities import *
 from ui.main_window import MainWindow
 from utils.errors.user_error import UserError
 from utils.layers import Layers
-
+from ui import title_screen
 
 import pygame
 
@@ -54,7 +54,7 @@ class Client(object):
                 return
             elif event.type == pygame.KEYDOWN:
                 if event.key == self.custom_keys[4]:
-                    projectile = Projectile(self.player.rect.right, self.player.rect.centery, 5, 5, 14)
+                    projectile = Projectile(self.player.rect.right, self.player.rect.centery, 5, 5, 20)
                     self.engine.projectiles.append(projectile)
         keys = pygame.key.get_pressed()
         direction = pygame.Vector2()
@@ -86,6 +86,7 @@ class Client(object):
         entities = self.engine.entities
         projectiles = self.engine.projectiles
         self.window.fill_background()
+        self.engine.draw_healthbar(self.window.screen, title_screen.width - 240, 0, 240, 77)
         for layer in Layers:
             for entitity in entities:
                 entitity.render(self.window.screen, layer)
