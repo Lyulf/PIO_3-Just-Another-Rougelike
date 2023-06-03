@@ -2,6 +2,8 @@ import math
 import pygame
 import time
 from entity import Entity
+from client import *
+from ui.main_window import *
 
 class RectEntity(Entity):
     """Base class for humanoid entities."""
@@ -24,14 +26,15 @@ class RectEntity(Entity):
 
     def collide_stage(self, stage_rect):
         """Moves the player back in bounds of the stage."""
-        if self.rect.left <= stage_rect.left:
-            self.rect.left = stage_rect.left
-        elif self.rect.right >= stage_rect.right:
-            self.rect.right = stage_rect.right
-        if self.rect.top <= stage_rect.top:
-            self.rect.top = stage_rect.top
-        elif self.rect.bottom >= stage_rect.bottom:
-            self.rect.bottom = stage_rect.bottom
+        if self.rect.left <= (stage_rect.left + 0.077*stage_rect.width):
+            self.rect.left = (stage_rect.left + 0.077*stage_rect.width)
+        elif self.rect.right >= (stage_rect.right - 0.2645*stage_rect.width):
+            self.rect.right = (stage_rect.right - 0.2645*stage_rect.width)
+        if self.rect.top <= (stage_rect.top + 0.125*stage_rect.height):
+            self.rect.top = (stage_rect.top + 0.125*stage_rect.height)
+        elif self.rect.bottom >= (stage_rect.bottom - 0.125*stage_rect.height):
+            self.rect.bottom = (stage_rect.bottom - 0.125*stage_rect.height)
+
 
     def search_for_impact(self, projectile, character, projectiles):
             if projectile.rect.colliderect(character.rect):
