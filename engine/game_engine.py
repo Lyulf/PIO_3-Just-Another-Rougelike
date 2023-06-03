@@ -67,7 +67,7 @@ class GameEngine(object):
             width=self.CHARACTER_WIDTH,
             height=self.CHARACTER_HEIGHT,
             speed=self.PLAYER_SPEED,
-            hp=100)
+            hp=10)
 
     def __create_opponent(self, x, y):
         return Opponent(
@@ -76,7 +76,7 @@ class GameEngine(object):
             width=self.OPPONENT_WIDTH,
             height=self.OPPONENT_HEIGHT,
             speed=self.OPPONENT_SPEED,
-            hp=100)
+            hp=10)
 
     def update(self, dt):
         """Advance physics by dt (delta time)."""

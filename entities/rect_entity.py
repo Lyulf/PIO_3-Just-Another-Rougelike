@@ -37,5 +37,5 @@ class RectEntity(Entity):
             if projectile.rect.colliderect(character.rect):
                 projectiles.remove(projectile)
                 character.change_animation('hurt')
-                character.get_hurt(10, character)
+                character.get_hurt(1, character)
 
