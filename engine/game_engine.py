@@ -66,14 +66,17 @@ class GameEngine(object):
             y=y,
             width=self.CHARACTER_WIDTH,
             height=self.CHARACTER_HEIGHT,
-            speed=self.PLAYER_SPEED)
+            speed=self.PLAYER_SPEED,
+            hp=100)
+
     def __create_opponent(self, x, y):
         return Opponent(
             x=x,
             y=y,
             width=self.OPPONENT_WIDTH,
             height=self.OPPONENT_HEIGHT,
-            speed=self.OPPONENT_SPEED)
+            speed=self.OPPONENT_SPEED,
+            hp=100)
 
     def update(self, dt):
         """Advance physics by dt (delta time)."""
@@ -84,4 +87,10 @@ class GameEngine(object):
         loop_nr = 0
         for projectile in self.projectiles:
             projectile.shoot()
+            for character in self.entities:
+                character.search_for_impact(projectile, character, self.projectiles)
+        for character in self.entities:
+            if character.hp == -1:
+                self.entities.remove(character)
+
 
