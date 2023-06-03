@@ -115,29 +115,11 @@ def playMultiplayer():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_back.checkForInput(play_mouse_pos):
-                    play()
+                    return
                 if host_game.checkForInput(play_mouse_pos):
-                    server = Server()
-                    server.start()
-                    client = Client(
-                        width=width,
-                        height=height,
-                        fps=fps_value[fps_choice],
-                        custom_keys=controls_button_value,
-                        is_multiplayer=True,
-                        ip='localhost',
-                        port=Server.DEFAULT_PORT)
-                    client.run()
+                    print('Work in progress...')  # TODO Host game option
                 if join_game.checkForInput(play_mouse_pos):
-                    client = Client(
-                        width=width,
-                        height=height,
-                        fps=fps_value[fps_choice],
-                        custom_keys=controls_button_value,
-                        is_multiplayer=True,
-                        ip='localhost',
-                        port=Server.DEFAULT_PORT)
-                    client.run()
+                    print('Work in progress...')  # TODO Join game option
 
         pygame.display.update()
 

@@ -13,17 +13,15 @@ import sys
 
 class Client(object):
     """Class handling all gameplay logic."""
-    def __init__(self, width, height, fps, custom_keys, is_multiplayer=False, ip=None, port=None):
+    def __init__(self, width, height, fps, custom_keys, ip=None, port=None):
         pygame.init()
         self.window = MainWindow(size=(width, height), fps=fps)
         self.engine = GameEngine()
         self.player = None
         self.__running = False
         self.custom_keys = custom_keys
-        self.is_multiplayer = is_multiplayer
         self.ip = ip
         self.port = port
-        self.socket = None
 
     def run(self):
         """Starts the game."""
@@ -38,26 +36,13 @@ class Client(object):
 
     def init(self):
         """Initialization before gameplay loop."""
-        if self.is_multiplayer:
-            self.socket = self.connect_to_server()
         self.window.show()
         self.engine.load_images()
-        if self.is_multiplayer:
-            print("Receive current state")
-            self.engine.receive_current_state(self.socket)
-            print("Receive player")
-            self.player = self.engine.receive_player(self.socket)
-        if not self.is_multiplayer:
-            self.player = self.engine.spawn_players(2)[0]
-            self.engine.spawn_opponents(1)
+        self.player = self.engine.spawn_players(4)[0]
+        self.engine.spawn_opponents(8)
         controls = ControlsComponent(self.custom_keys)
         self.engine.component_manager.add_component(self.player, controls)
         self.engine.create()
-
-    def connect_to_server(self):
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((self.ip, self.port))
-        return sock
 
     def loop(self):
         """Gameplay loop."""
@@ -80,9 +65,6 @@ class Client(object):
     def update(self):
         """Calls on_update in systems"""
         self.window.fill_background()
-        if self.is_multiplayer:
-            print("Synchronizing with server")
-            self.engine.synchronize_with_server(self.socket)
         self.engine.update()
         dt = self.window.update()
         update_dt(dt)
