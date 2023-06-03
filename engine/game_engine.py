@@ -86,7 +86,7 @@ class GameEngine(object):
             entity.collide_stage(self.background_rect)
         loop_nr = 0
         for projectile in self.projectiles:
-            projectile.shoot()
+            projectile.shoot() 
             projectile.collide_with_map(projectile, self.projectiles, self.background_rect)
             for character in self.entities:
                 character.search_for_impact(projectile, character, self.projectiles)
