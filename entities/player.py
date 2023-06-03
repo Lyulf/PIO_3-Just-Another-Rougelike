@@ -25,6 +25,7 @@ class Player(Character):
 
     def __init__(self, x, y, width, height, speed, hp):
         super().__init__(x, y, width, height, speed, hp)
+        self.hp = hp
         self.load_images()
         self.old_color = pygame.Color(246, 187, 148)
         self.new_color = pygame.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))

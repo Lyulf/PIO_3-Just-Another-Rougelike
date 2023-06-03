@@ -23,6 +23,32 @@ class GameEngine(object):
         It should be windows rectangle or map rectangle."""
         self.background_rect = rect
 
+    def draw_healthbar(self, screen, x, y, width, height):
+        player = self.__create_player(x,y)
+        if player.hp == 10:
+            healthbar_img = pygame.image.load("resources/HP_Bar/10.png")
+        elif player.hp == 9:
+            healthbar_img = pygame.image.load("resources/HP_Bar/9.png")
+        elif player.hp == 8:
+            healthbar_img = pygame.image.load("resources/HP_Bar/8.png")
+        elif player.hp == 7:
+            healthbar_img = pygame.image.load("resources/HP_Bar/7.png")
+        elif player.hp == 6:
+            healthbar_img = pygame.image.load("resources/HP_Bar/6.png")
+        elif player.hp == 5:
+            healthbar_img = pygame.image.load("resources/HP_Bar/5.png")
+        elif player.hp == 4:
+            healthbar_img = pygame.image.load("resources/HP_Bar/4.png")
+        elif player.hp == 3:
+            healthbar_img = pygame.image.load("resources/HP_Bar/3.png")
+        elif player.hp == 2:
+            healthbar_img = pygame.image.load("resources/HP_Bar/2.png")
+        elif player.hp == 1:
+            healthbar_img = pygame.image.load("resources/HP_Bar/1.png")
+        elif player.hp == 0:
+            healthbar_img = pygame.image.load("resources/HP_Bar/0.png")
+        healthbar_img = pygame.transform.scale(healthbar_img, (width, height))
+        screen.blit(healthbar_img, (x, y))
     def spawn_players(self, number_of_players):
         """Spawns players evenly distributed around the whole map."""
         self.entities += [None] * number_of_players
@@ -84,7 +110,6 @@ class GameEngine(object):
             entity.move(dt)
         for entity in self.entities:
             entity.collide_stage(self.background_rect)
-        loop_nr = 0
         for projectile in self.projectiles:
             projectile.shoot()
             for character in self.entities:

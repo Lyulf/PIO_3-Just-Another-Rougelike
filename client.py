@@ -1,9 +1,11 @@
+import ui.title_screen
 from engine.game_engine import GameEngine
 from entities import *
 from ui.main_window import MainWindow
 from utils.errors.user_error import UserError
 from utils.layers import Layers
 
+from ui import title_screen
 
 import pygame
 
@@ -86,6 +88,7 @@ class Client(object):
         entities = self.engine.entities
         projectiles = self.engine.projectiles
         self.window.fill_background()
+        self.engine.draw_healthbar(self.window.screen, title_screen.width-250, title_screen.height-80, 250, 80)
         for layer in Layers:
             for entitity in entities:
                 entitity.render(self.window.screen, layer)
