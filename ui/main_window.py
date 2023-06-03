@@ -7,6 +7,7 @@ class MainWindow(object):
 
     Handles displaying the window and all of its elements.
     """
+    map_image = pygame.image.load("resources\Map\plansza.png")
     def __init__(self, size, fps):
         pygame.init()
         self.size = size
@@ -26,7 +27,7 @@ class MainWindow(object):
 
     def fill_background(self):
         self.screen.fill((220, 220, 220))
-        image = pygame.image.load("resources\Map\plansza.png")
+        image = self.map_image
         scaled_image = pygame.transform.scale(image, self.size)
         self.screen.blit(scaled_image, (0, 0))
 
