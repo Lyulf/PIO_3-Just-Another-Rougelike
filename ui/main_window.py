@@ -1,6 +1,6 @@
 import pygame
 
-
+from utils.border import set_border
 
 class MainWindow(object):
     """Wrapper for the main window.
@@ -27,6 +27,15 @@ class MainWindow(object):
     def show(self):
         """Shows the window."""
         self.screen = pygame.display.set_mode(self.size)
+        stage = self.screen.get_rect().copy()
+        wall_size = pygame.Rect(0, 0, stage.width // 16, stage.height // 8)
+        stage.left += wall_size.width
+        stage.top += wall_size.height
+        stage.width = 3 * stage.width // 4
+        stage.width -= wall_size.width
+        stage.height -= 2 * wall_size.height
+        #stage.height -= wall_size.height
+        set_border(stage)
 
     def update(self):
         """Displays current frame."""

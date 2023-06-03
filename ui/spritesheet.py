@@ -41,8 +41,8 @@ class SpriteSheet:
         if self.current_frame + 1 == len(self.sprites):
             self.is_finished = True
 
-        sprite_x = rect.x - ((self.sprite_width * self.scale - rect.width) / 2) + offset_x
-        sprite_y = rect.y - (self.sprite_height * self.scale - rect.height) + offset_y
+        sprite_x = rect.x - (self.sprite_width * self.scale - rect.width) / 2 + offset_x
+        sprite_y = rect.y - (self.sprite_height * self.scale - rect.height) / 2 + offset_y
 
         # Scale the sprite to the desired size
         sprite = pygame.transform.scale(self.sprites[self.current_frame],

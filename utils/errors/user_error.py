@@ -1,4 +1,4 @@
-from game_error import GameError
+from utils.errors.game_error import GameError
 
 class UserError(GameError):
     """Class for errors caused by user."""

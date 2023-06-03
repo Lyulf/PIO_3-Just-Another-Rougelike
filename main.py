@@ -1,3 +1,9 @@
 import ui.title_screen
 if __name__ == '__main__':
-    game = ui.title_screen
+    try:
+        game = ui.title_screen.run()
+    except SystemExit:
+        pass
+    except:
+        import pdb; pdb.post_mortem()
+        raise
