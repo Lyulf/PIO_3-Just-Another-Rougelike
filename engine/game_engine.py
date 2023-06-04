@@ -57,6 +57,8 @@ class GameEngine(object):
                 'right_sprite': pygame.image.load("resources/playerModel/right.png").convert(),
                 'down_sprite': pygame.image.load("resources/playerModel/down.png").convert(),
                 'up_sprite': pygame.image.load("resources/playerModel/up.png").convert(),
+                'hurt_sprite': pygame.image.load("resources/playerModel/hurt.png").convert(),
+                'death_sprite': pygame.image.load("resources/playerModel/death.png").convert(),
             },
             'health_bar': [
                 pygame.image.load(f"resources/HP_Bar/{id}.png").convert() for id in range(11)
@@ -132,6 +134,8 @@ class GameEngine(object):
             'right' : ui.spritesheet.SpriteSheet(sprites['right_sprite'], 16, 16, 250, 6, True, old_color, new_color),
             'down' : ui.spritesheet.SpriteSheet(sprites['down_sprite'], 16, 16, 250, 6, True, old_color, new_color),
             'up' : ui.spritesheet.SpriteSheet(sprites['up_sprite'], 16, 16, 250, 6, True, old_color, new_color),
+            'death' : ui.spritesheet.SpriteSheet(sprites['death_sprite'], 16, 16, 250, 6, True, old_color, new_color),
+            'hurt' : ui.spritesheet.SpriteSheet(sprites['hurt_sprite'], 16, 16, 250, 6, True, old_color, new_color),
         }
         offset = pygame.Vector2(0, -50)
         sprite = ImageSpriteComponent(player_rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
