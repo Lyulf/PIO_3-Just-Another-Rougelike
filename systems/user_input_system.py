@@ -7,7 +7,9 @@ class UserInputSystem(System):
     def on_create(self):
         self.keys_down = []
         self.held_keys = {}
+        self.last_spawn_time = 0
     def on_update(self):
+        delay_time = 250  # Delay time in milliseconds (0.5 seconds)
         for entity in self.entity_manager.get_entities():
             components = self.component_manager.get_components(entity, ControlsComponent, RigidbodyComponent)
             try:
@@ -20,7 +22,10 @@ class UserInputSystem(System):
                 mouse_vector = pygame.Vector2(*mouse_pos)
                 pygame.event.get()
                 if pygame.mouse.get_pressed()[0]:
-                    self.__spawn_projectile(entity, mouse_vector)
+                    current_time = pygame.time.get_ticks()
+                    if current_time - self.last_spawn_time >= delay_time:
+                        self.last_spawn_time = current_time
+                        self.__spawn_projectile(entity, mouse_vector)
             except IndexError:
                 pass
             direction = pygame.Vector2()
@@ -37,7 +42,7 @@ class UserInputSystem(System):
             except ValueError:
                 rigidbody.direction = pygame.Vector2()
         self.keys_down = []
-        
+
     def __spawn_projectile(self, entity, mouse_vector):
         projectile = self.entity_manager.create_entity()
         entity_components = self.component_manager.get_components(entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
