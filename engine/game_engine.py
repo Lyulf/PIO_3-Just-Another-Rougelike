@@ -20,7 +20,7 @@ class GameEngine(object):
     CHARACTER_HEIGHT = 50
     OPPONENT_WIDTH = 50
     OPPONENT_HEIGHT = 50
-    OPPONENT_SPEED = 1
+    OPPONENT_SPEED = 0.2
     PLAYER_SPEED = 1
 
     def __init__(self):
