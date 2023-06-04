@@ -43,21 +43,22 @@ class GameEngine(object):
     def load_images(self):
         self.sprites = {
             'demon': {
-                'idle_sprite': pygame.image.load("resources/enemies/demon/idle.png"),
-                'walk_sprite': pygame.image.load("resources/enemies/demon/walk.png"),
-                'hurt_sprite': pygame.image.load("resources/enemies/demon/hurt.png"),
-                'attack_sprite': pygame.image.load("resources/enemies/demon/attack.png"),
-                'death_sprite': pygame.image.load("resources/enemies/demon/death.png"),
+                'idle_sprite': pygame.image.load("resources/enemies/demon/idle.png").convert_alpha(),
+                'walk_sprite': pygame.image.load("resources/enemies/demon/walk.png").convert_alpha(),
+                'hurt_sprite': pygame.image.load("resources/enemies/demon/hurt.png").convert_alpha(),
+
+                'attack_sprite': pygame.image.load("resources/enemies/demon/attack.png").convert_alpha(),
+                'death_sprite': pygame.image.load("resources/enemies/demon/death.png").convert_alpha(),
             },
             'player': {
-                'idle_sprite': pygame.image.load("resources/playerModel/idle.png"),
-                'left_sprite': pygame.image.load("resources/playerModel/left.png"),
-                'right_sprite': pygame.image.load("resources/playerModel/right.png"),
-                'down_sprite': pygame.image.load("resources/playerModel/down.png"),
-                'up_sprite': pygame.image.load("resources/playerModel/up.png"),
+                'idle_sprite': pygame.image.load("resources/playerModel/idle.png").convert(),
+                'left_sprite': pygame.image.load("resources/playerModel/left.png").convert(),
+                'right_sprite': pygame.image.load("resources/playerModel/right.png").convert(),
+                'down_sprite': pygame.image.load("resources/playerModel/down.png").convert(),
+                'up_sprite': pygame.image.load("resources/playerModel/up.png").convert(),
             },
             'health_bar': [
-                pygame.image.load(f"resources/HP_Bar/{id}.png") for id in range(11)
+                pygame.image.load(f"resources/HP_Bar/{id}.png").convert() for id in range(11)
             ]
         }
 
