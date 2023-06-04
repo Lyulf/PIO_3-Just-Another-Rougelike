@@ -5,7 +5,9 @@ import time
 
 from ui.button import Button
 from client import Client
+from server import Server
 from ui.slider import Slider
+from components.controls_component import Controls
 
 pygame.init()
 
@@ -22,10 +24,19 @@ left_arrow_image = pygame.image.load("resources/mainMenu/left_arrow.png")
 right_arrow_image = pygame.image.load("resources/mainMenu/right_arrow.png")
 quit_image = pygame.image.load("resources/mainMenu/Quit Rect.png")
 
-controls_button_value = [119, 97, 115, 100, 32, 101]  # ASCII value of: W, A, S, D, SPACE, E
+controls_button_value = {
+    Controls.UP: pygame.K_w,
+    Controls.LEFT: pygame.K_a,
+    Controls.DOWN: pygame.K_s,
+    Controls.RIGHT: pygame.K_d,
+    Controls.SHOOT: pygame.K_SPACE,
+    Controls.USE: pygame.K_e,
+}  # ASCII value of: W, A, S, D, SPACE, E
 fps_value = [30, 60, 120, 144, 240, 360]
 change_button_chars = ['w', 'a', 's', 'd', 'space', 'e']
 fps_choice = 1
+width = 1280
+height = 720
 
 
 def get_font(size):  # Returns Press-Start-2P in the desired size
@@ -64,9 +75,9 @@ def play():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_back.checkForInput(play_mouse_pos):
-                    main_menu()
+                    return
                 if play_singleplayer.checkForInput(play_mouse_pos):
-                    client = Client(1280, 720, fps_value[fps_choice], controls_button_value)
+                    client = Client(width=width, height=height, fps=fps_value[fps_choice], custom_keys=controls_button_value)
                     client.run()
                 if play_multiplayer.checkForInput(play_mouse_pos):
                     print('Multiplayer work in progress...')
@@ -106,7 +117,7 @@ def playMultiplayer():
                 sys.exit()
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if play_back.checkForInput(play_mouse_pos):
-                    play()
+                    return
                 if host_game.checkForInput(play_mouse_pos):
                     print('Work in progress...')  # TODO Host game option
                 if join_game.checkForInput(play_mouse_pos):
@@ -200,7 +211,7 @@ def options():
                 if controls_text.checkForInput(options_mouse_pos):
                     controls()
                 if options_back.checkForInput(options_mouse_pos):
-                    main_menu()
+                    return
                 if fps_right.checkForInput(options_mouse_pos):
                     if fps_choice == 5:
                         fps_choice = 0
@@ -319,7 +330,7 @@ def controls():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if controls_back.checkForInput(controls_mouse_pos):
                     if all(value is False for value in controls_ispressed):
-                        options()
+                        return
                     else:
                         main_screen.fill('BLACK')
                         warning_text = get_font(35).render("You have to assign a button first!", True, "WHITE")
@@ -415,5 +426,5 @@ def main_menu():
 
         pygame.display.update()
 
-
-main_menu()
+def run():
+    main_menu()
