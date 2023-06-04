@@ -11,7 +11,9 @@ from components.controls_component import Controls
 
 pygame.init()
 
-main_screen = pygame.display.set_mode((1280, 720))
+width = 1280
+height = 720
+main_screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Menu")
 
 background = pygame.image.load("resources/mainMenu/Background.png")
