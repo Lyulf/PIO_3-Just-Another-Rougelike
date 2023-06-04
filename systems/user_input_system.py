@@ -7,7 +7,9 @@ class UserInputSystem(System):
     def on_create(self):
         self.keys_down = []
         self.held_keys = {}
+        self.last_spawn_time = 0
     def on_update(self):
+        delay_time = 250  # Delay time in milliseconds (0.5 seconds)
         for entity in self.entity_manager.get_entities():
             components = self.component_manager.get_components(entity, ControlsComponent, RigidbodyComponent)
             try:
@@ -16,14 +18,16 @@ class UserInputSystem(System):
             except (TypeError, KeyError):
                 continue
             try:
-                keys_down = self.keys_down.copy()
-                while True:
-                    button = keys_down.pop(0)
-                    if button == controls.custom_keys[Controls.SHOOT]:
-                        self.__spawn_projectile(entity)
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_vector = pygame.Vector2(*mouse_pos)
+                pygame.event.get()
+                if pygame.mouse.get_pressed()[0]:
+                    current_time = pygame.time.get_ticks()
+                    if current_time - self.last_spawn_time >= delay_time:
+                        self.last_spawn_time = current_time
+                        self.__spawn_projectile(entity, mouse_vector)
             except IndexError:
                 pass
-
             direction = pygame.Vector2()
             if self.held_keys[controls.custom_keys[Controls.UP]]:
                 direction.y -= 1
@@ -38,8 +42,8 @@ class UserInputSystem(System):
             except ValueError:
                 rigidbody.direction = pygame.Vector2()
         self.keys_down = []
-        
-    def __spawn_projectile(self, entity):
+
+    def __spawn_projectile(self, entity, mouse_vector):
         projectile = self.entity_manager.create_entity()
         entity_components = self.component_manager.get_components(entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
         try:
@@ -53,10 +57,11 @@ class UserInputSystem(System):
             entity_transform.scale.copy(),
         )
         self.component_manager.add_component(projectile, projectile_transform)
+        projectile_direction = (mouse_vector - entity_transform.position).normalize()
         projectile_rigidbody = RigidbodyComponent(
             3,
             CollisionType.KINETIC,
-            entity_rigidbody.direction.copy() if entity_rigidbody.direction != pygame.Vector2() else pygame.Vector2(0, 1),
+            projectile_direction,
         )
         self.component_manager.add_component(projectile, projectile_rigidbody)
         rect = pygame.Rect(0, 0, 20, 20)

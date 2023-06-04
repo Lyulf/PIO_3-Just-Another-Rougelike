@@ -29,11 +29,10 @@ controls_button_value = {
     Controls.LEFT: pygame.K_a,
     Controls.DOWN: pygame.K_s,
     Controls.RIGHT: pygame.K_d,
-    Controls.SHOOT: pygame.K_SPACE,
     Controls.USE: pygame.K_e,
 }  # ASCII value of: W, A, S, D, SPACE, E
 fps_value = [30, 60, 120, 144, 240, 360]
-change_button_chars = ['w', 'a', 's', 'd', 'space', 'e']
+change_button_chars = ['w', 'a', 's', 'd', 'e']
 fps_choice = 1
 width = 1280
 height = 720
@@ -265,9 +264,9 @@ class ExclusiveBooleanArray:
 
 def controls():
     global controls_button_value
-    controls_ispressed = ExclusiveBooleanArray(6)
+    controls_ispressed = ExclusiveBooleanArray(5)
     global change_button_chars
-    change_button_font_size = [40] * 6
+    change_button_font_size = [40] * 5
     backup_change_char = 'W'
     while True:
         controls_mouse_pos = pygame.mouse.get_pos()
@@ -298,13 +297,21 @@ def controls():
                                                    controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
                                                    button_font_size=change_button_font_size)
 
-        shoot_change_button = draw_text_and_button(screen=main_screen, text="SHOOT:", position=(760, 330),
-                                                   font_size=25, button_pos=(960, 330), button_index=4,
-                                                   controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
-                                                   button_font_size=change_button_font_size)
+        # shoot_change_button = draw_text_and_button(screen=main_screen, text="SHOOT:", position=(760, 330),
+        #                                            font_size=25, button_pos=(960, 330), button_index=-1,
+        #                                            controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
+        #                                            button_font_size=change_button_font_size)
+
+        shoot_text = get_font(25).render("SHOOT:", True, "#b68f40")
+        shoot_rect = shoot_text.get_rect(center=(760, 330))
+        main_screen.blit(shoot_text,shoot_rect)
+
+        text_surface = get_font(25).render("mouse1", True, "White")
+        text_rect = text_surface.get_rect(center=(960, 330))
+        main_screen.blit(text_surface, text_rect)
 
         use_change_button = draw_text_and_button(screen=main_screen, text="USE:", position=(760, 430),
-                                                   font_size=25, button_pos=(960, 430), button_index=5,
+                                                   font_size=25, button_pos=(960, 430), button_index=4,
                                                    controls_pressed=controls_ispressed, mouse_pos=controls_mouse_pos,
                                                    button_font_size=change_button_font_size)
 
@@ -319,9 +326,16 @@ def controls():
             (left_change_button, 1),
             (down_change_button, 2),
             (right_change_button, 3),
-            (shoot_change_button, 4),
-            (use_change_button, 5)
+            (use_change_button, 4)
         ]
+
+        index_to_control = {
+            0: Controls.UP,
+            1: Controls.LEFT,
+            2: Controls.DOWN,
+            3: Controls.RIGHT,
+            4: Controls.USE,
+        }
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -353,7 +367,7 @@ def controls():
                         if all(value != text for value in change_button_chars):
                             change_button_font_size[index] = 40
                             change_button_chars[index] = text
-                            controls_button_value[index] = event.key
+                            controls_button_value[index_to_control[index]] = event.key
                             controls_ispressed.set_false()
                         else:
                             change_button_chars[index] = backup_change_char
