@@ -47,7 +47,6 @@ class UserInputSystem(System):
             entity_rigidbody = entity_components[RigidbodyComponent]
         except (TypeError, KeyError):
             return
-        #print(entity_transform.position)
         projectile_transform = TransformComponent(
             entity_transform.position.copy(),
             entity_transform.rotation,
@@ -62,17 +61,17 @@ class UserInputSystem(System):
         self.component_manager.add_component(projectile, projectile_rigidbody)
         rect = pygame.Rect(0, 0, 20, 20)
         anchor = pygame.Vector2(rect.center)
-        ignore_entity_types = [EntityTypes.PROJECTILE]
+        ignore_entity_types = [EntityType.PROJECTILE]
         try:
             entity_rect_hitbox = entity_components[RectHitboxComponent]
             ignore_entity_types.append(entity_rect_hitbox.entity_type)
         except KeyError:
             pass
         projectile_rect_hitbox = RectHitboxComponent(
-            rect, anchor, EntityTypes.PROJECTILE, ignore_entity_types
+            rect, anchor, EntityType.PROJECTILE, ignore_entity_types
         )
         self.component_manager.add_component(projectile, projectile_rect_hitbox)
         projectile_rect_sprite = RectSpriteComponent(rect, anchor, 'green')
         self.component_manager.add_component(projectile, projectile_rect_sprite)
-        damage = DamageComponent(1, False)
+        damage = DamageComponent(1, False, ignore_entity_types)
         self.component_manager.add_component(projectile, damage)

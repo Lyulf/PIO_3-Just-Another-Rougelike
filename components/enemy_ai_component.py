@@ -6,4 +6,4 @@ class AiType(Enum):
 
 class EnemyAiComponent(Component):
     def __init__(self, ai_type: AiType):
-        self. ai_type = ai_type
+        self.ai_type = ai_type

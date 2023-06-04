@@ -1,4 +1,5 @@
 from systems.collision_system import *
+from systems.damage_system import *
 from systems.enemy_ai_system import *
 from systems.health_system import *
 from systems.movement_system import *

@@ -32,10 +32,11 @@ class GameEngine(object):
         self.add_system(0, UserInputSystem)
         self.add_system(1, EnemyAiSystem)
         self.add_system(2, MovementSystem)
-        self.add_system(3, CollisionSystem)
-        self.add_system(4, HealthSystem)
-        self.add_system(5, RenderSystem)
-        self.add_system(5, RenderSidebarSystem)
+        self.add_system(3, DamageSystem)
+        self.add_system(4, CollisionSystem)
+        self.add_system(5, HealthSystem)
+        self.add_system(6, RenderSystem)
+        self.add_system(6, RenderSidebarSystem)
 
     def add_system(self, priority: int, system_type: type, *additional_args):
         self.system_manager.add_system(priority, system_type(self.entity_manager, self.component_manager, *additional_args))
@@ -120,7 +121,7 @@ class GameEngine(object):
         self.component_manager.add_component(player, rigidbody)
         player_rect = pygame.Rect(0, 0, self.CHARACTER_WIDTH, self.CHARACTER_HEIGHT)
         anchor = pygame.Vector2(player_rect.center)
-        rect_hitbox = RectHitboxComponent(player_rect, anchor, EntityTypes.PLAYER, [EntityTypes.PLAYER])
+        rect_hitbox = RectHitboxComponent(player_rect, anchor, EntityType.PLAYER, [EntityType.PLAYER])
         self.component_manager.add_component(player, rect_hitbox)
         old_color = pygame.Color(246, 187, 148)
         new_color = pygame.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -135,7 +136,7 @@ class GameEngine(object):
         offset = pygame.Vector2(0, -50)
         sprite = ImageSpriteComponent(player_rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
         self.component_manager.add_component(player, sprite)
-        health = HealthComponent(10)
+        health = HealthComponent(10, EntityType.PLAYER, 0.2)
         self.component_manager.add_component(player, health)
         player_component = PlayerComponent(is_current_player, id)
         self.component_manager.add_component(player, player_component)
@@ -151,7 +152,7 @@ class GameEngine(object):
         self.component_manager.add_component(opponent, rigidbody)
         opponent_rect = pygame.Rect(0, 0, self.OPPONENT_WIDTH, self.OPPONENT_HEIGHT)
         anchor = pygame.Vector2(opponent_rect.center)
-        rect_hitbox = RectHitboxComponent(opponent_rect, anchor, EntityTypes.ENEMY, [])
+        rect_hitbox = RectHitboxComponent(opponent_rect, anchor, EntityType.ENEMY)
         self.component_manager.add_component(opponent, rect_hitbox)
         sprites = self.sprites['demon']
         sprite_sheets = {
@@ -164,10 +165,12 @@ class GameEngine(object):
         offset = pygame.Vector2(34, -50)
         sprite = ImageSpriteComponent(opponent_rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
         self.component_manager.add_component(opponent, sprite)
-        health = HealthComponent(10)
+        health = HealthComponent(10, EntityType.ENEMY, 0.1)
         self.component_manager.add_component(opponent, health)
         enemy_ai = EnemyAiComponent(AiType.BASIC)
         self.component_manager.add_component(opponent, enemy_ai)
+        damage = DamageComponent(1, True, [EntityType.ENEMY])
+        self.component_manager.add_component(opponent, damage)
         return opponent
 
     def update(self):

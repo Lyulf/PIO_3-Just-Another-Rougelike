@@ -15,9 +15,6 @@ class EnemyAiSystem(System):
             except (TypeError, KeyError):
                 continue
 
-        if not player_positions:
-            return
-
         for entity in entities:
             components = self.component_manager.get_components(entity, TransformComponent, RigidbodyComponent, EnemyAiComponent)
             try:
@@ -25,6 +22,10 @@ class EnemyAiSystem(System):
                 rigidbody_component = components[RigidbodyComponent]
                 transform = components[TransformComponent]
             except (TypeError, KeyError):
+                continue
+
+            if not player_positions:
+                rigidbody_component.direction = pygame.Vector2()
                 continue
 
             if ai_component.ai_type == AiType.BASIC:

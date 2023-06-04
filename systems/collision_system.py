@@ -1,20 +1,22 @@
 from systems.system import *
 from utils.border import get_border
+from entities.entity import Entity
 
 class CollisionSystem(System):
     def on_update(self):
-        for lhs_idx, lhs_entity in enumerate(self.entity_manager.get_entities()):
+        entities = self.entity_manager.get_entities()
+        for lhs_idx, lhs_entity in enumerate(entities):
             lhs_components = self.component_manager.get_components(
-                lhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent, HealthComponent, DamageComponent)
+                lhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
             try:
                 self.__collide_border(lhs_entity, lhs_components)
                 if not lhs_entity.is_alive:
                     continue
             except (TypeError, KeyError):
                 continue
-            for rhs_entity in self.entity_manager.get_entities()[lhs_idx + 1:]:
+            for rhs_entity in entities[lhs_idx + 1:]:
                 rhs_components = self.component_manager.get_components(
-                    rhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent, HealthComponent, DamageComponent)
+                    rhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
                 try:
                     self.__collide_entity(lhs_entity, lhs_components, rhs_entity, rhs_components)
                 except (TypeError, KeyError):
@@ -33,21 +35,10 @@ class CollisionSystem(System):
         rect = rect_hitbox.rect.move(transform.position - rect_hitbox.anchor)
         new_rect = rect.clamp(border)
         delta_position = pygame.Vector2(new_rect.center) - pygame.Vector2(rect.center)
-        if rect_hitbox.entity_type == EntityTypes.PROJECTILE and any(delta_position):
+        if rect_hitbox.entity_type == EntityType.PROJECTILE and any(delta_position):
             entity.is_alive = False
             return
         transform.position += delta_position
-
-
-        # if rect.left <= border.left:
-        #     transform.position.x += border.left - rect.left
-        # elif rect.right >= border.right:
-        #     transform.position.x -=  rect.right - border.right
-        #     rect.right = border.right
-        # if rect.top <= border.top:
-        #     transform.position.y += border.top - rect.top
-        # elif rect.bottom >= border.bottom:
-        #     transform.position.y -=  rect.bottom - border.bottom
 
     def __collide_entity(self, lhs_entity, lhs_components, rhs_entity, rhs_components):
         lhs_transform = lhs_components[TransformComponent]
@@ -62,9 +53,9 @@ class CollisionSystem(System):
             raise TypeError()
         if rhs_rigidbody.collision_type == CollisionType.NONE:
             raise TypeError()
-        if lhs_rect_hitbox.entity_type in rhs_rect_hitbox.ignore_types:
+        if lhs_rect_hitbox.entity_type in rhs_rect_hitbox.ignore_entity_types:
             raise TypeError()
-        if rhs_rect_hitbox.entity_type in lhs_rect_hitbox.ignore_types:
+        if rhs_rect_hitbox.entity_type in lhs_rect_hitbox.ignore_entity_types:
             raise TypeError()
 
         lhs_rect = lhs_rect_hitbox.rect.move(lhs_transform.position - lhs_rect_hitbox.anchor)
@@ -76,28 +67,6 @@ class CollisionSystem(System):
             normal_delta_position = delta_position.normalize()
         except ValueError:
             return
-
-        try:
-            lhs_health = lhs_components[HealthComponent]
-            rhs_damage = rhs_components[DamageComponent]
-            lhs_health.current_health -= rhs_damage.damage
-            lhs_health.was_hurt = True
-            if not rhs_damage.piercing:
-                rhs_entity.is_alive = False
-                return
-        except KeyError:
-            pass
-
-        try:
-            rhs_health = rhs_components[HealthComponent]
-            lhs_damage = lhs_components[DamageComponent]
-            rhs_health.current_health -= lhs_damage.damage
-            rhs_health.was_hurt = True
-            if not lhs_damage.piercing:
-                lhs_entity.is_alive = False
-                return
-        except KeyError:
-            pass
 
         if abs(normal_delta_position.x) > abs(normal_delta_position.y):
             delta_position.x = 0
@@ -115,4 +84,3 @@ class CollisionSystem(System):
             lhs_transform.position += delta_position
         if rhs_rigidbody.collision_type == CollisionType.DYNAMIC:
             rhs_transform.position -= delta_position
-        
