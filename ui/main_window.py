@@ -14,7 +14,7 @@ class MainWindow(object):
     def load_images(cls):
         if not cls.is_loaded:
             cls.is_loaded = True
-            cls.map_image = pygame.image.load("resources\Map\plansza.png")
+            cls.map_image = pygame.image.load("resources/Map/plansza.png").convert_alpha()
     def __init__(self, size, fps):
         pygame.init()
         self.load_images()

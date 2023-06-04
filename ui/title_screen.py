@@ -16,13 +16,13 @@ height = 720
 main_screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Menu")
 
-background = pygame.image.load("resources/mainMenu/Background.png")
-play_background = pygame.image.load("resources/mainMenu/Play Background.png")
-options_image = pygame.image.load("resources/mainMenu/Options Rect.png")
-play_image = pygame.image.load("resources/mainMenu/Play Rect.png")
-left_arrow_image = pygame.image.load("resources/mainMenu/left_arrow.png")
-right_arrow_image = pygame.image.load("resources/mainMenu/right_arrow.png")
-quit_image = pygame.image.load("resources/mainMenu/Quit Rect.png")
+background = pygame.image.load("resources/mainMenu/Background.png").convert()
+play_background = pygame.image.load("resources/mainMenu/Play Background.png").convert()
+options_image = pygame.image.load("resources/mainMenu/Options Rect.png").convert()
+play_image = pygame.image.load("resources/mainMenu/Play Rect.png").convert()
+left_arrow_image = pygame.image.load("resources/mainMenu/left_arrow.png").convert()
+right_arrow_image = pygame.image.load("resources/mainMenu/right_arrow.png").convert()
+quit_image = pygame.image.load("resources/mainMenu/Quit Rect.png").convert()
 
 controls_button_value = {
     Controls.UP: pygame.K_w,
