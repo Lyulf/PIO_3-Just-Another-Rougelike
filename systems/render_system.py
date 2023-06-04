@@ -28,14 +28,15 @@ class RenderSystem(System):
                 rigidbody = components[RigidbodyComponent]
                 image_sprite = components[ImageSpriteComponent]
                 try:
-                    if rigidbody.direction.x > 0:
-                        image_sprite.current_sprite = image_sprite.sprite_sheets['right']
-                    elif rigidbody.direction.x < 0:
-                        image_sprite.current_sprite = image_sprite.sprite_sheets['left']
-                    elif rigidbody.direction.y > 0:
-                        image_sprite.current_sprite = image_sprite.sprite_sheets['down']
-                    elif rigidbody.direction.y < 0:
-                        image_sprite.current_sprite = image_sprite.sprite_sheets['up']
+                    if image_sprite.current_sprite in (image_sprite.sprite_sheets[key] for key in ('idle', 'up', 'down', 'left', 'right')):
+                        if rigidbody.direction.x > 0:
+                            image_sprite.current_sprite = image_sprite.sprite_sheets['right']
+                        elif rigidbody.direction.x < 0:
+                            image_sprite.current_sprite = image_sprite.sprite_sheets['left']
+                        elif rigidbody.direction.y > 0:
+                            image_sprite.current_sprite = image_sprite.sprite_sheets['down']
+                        elif rigidbody.direction.y < 0:
+                            image_sprite.current_sprite = image_sprite.sprite_sheets['up']
                 except KeyError:
                     pass
 

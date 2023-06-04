@@ -1,4 +1,3 @@
 
-
 class Component(object):
     pass

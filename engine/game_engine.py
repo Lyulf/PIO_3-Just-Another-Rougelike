@@ -20,7 +20,7 @@ class GameEngine(object):
     CHARACTER_HEIGHT = 50
     OPPONENT_WIDTH = 50
     OPPONENT_HEIGHT = 50
-    OPPONENT_SPEED = 1
+    OPPONENT_SPEED = 0.2
     PLAYER_SPEED = 1
 
     def __init__(self):
@@ -30,11 +30,13 @@ class GameEngine(object):
         self.sprites = None
 
         self.add_system(0, UserInputSystem)
-        self.add_system(1, MovementSystem)
-        self.add_system(2, CollisionSystem)
-        self.add_system(3, HealthSystem)
-        self.add_system(4, RenderSystem)
-        self.add_system(4, RenderSidebarSystem)
+        self.add_system(1, EnemyAiSystem)
+        self.add_system(2, MovementSystem)
+        self.add_system(3, DamageSystem)
+        self.add_system(4, CollisionSystem)
+        self.add_system(5, HealthSystem)
+        self.add_system(6, RenderSystem)
+        self.add_system(6, RenderSidebarSystem)
 
     def add_system(self, priority: int, system_type: type, *additional_args):
         self.system_manager.add_system(priority, system_type(self.entity_manager, self.component_manager, *additional_args))
@@ -42,21 +44,24 @@ class GameEngine(object):
     def load_images(self):
         self.sprites = {
             'demon': {
-                'idle_sprite': pygame.image.load("resources/enemies/demon/idle.png"),
-                'walk_sprite': pygame.image.load("resources/enemies/demon/walk.png"),
-                'hurt_sprite': pygame.image.load("resources/enemies/demon/hurt.png"),
-                'attack_sprite': pygame.image.load("resources/enemies/demon/attack.png"),
-                'death_sprite': pygame.image.load("resources/enemies/demon/death.png"),
+                'idle_sprite': pygame.image.load("resources/enemies/demon/idle.png").convert_alpha(),
+                'walk_sprite': pygame.image.load("resources/enemies/demon/walk.png").convert_alpha(),
+                'hurt_sprite': pygame.image.load("resources/enemies/demon/hurt.png").convert_alpha(),
+
+                'attack_sprite': pygame.image.load("resources/enemies/demon/attack.png").convert_alpha(),
+                'death_sprite': pygame.image.load("resources/enemies/demon/death.png").convert_alpha(),
             },
             'player': {
-                'idle_sprite': pygame.image.load("resources/playerModel/idle.png"),
-                'left_sprite': pygame.image.load("resources/playerModel/left.png"),
-                'right_sprite': pygame.image.load("resources/playerModel/right.png"),
-                'down_sprite': pygame.image.load("resources/playerModel/down.png"),
-                'up_sprite': pygame.image.load("resources/playerModel/up.png"),
+                'idle_sprite': pygame.image.load("resources/playerModel/idle.png").convert(),
+                'left_sprite': pygame.image.load("resources/playerModel/left.png").convert(),
+                'right_sprite': pygame.image.load("resources/playerModel/right.png").convert(),
+                'down_sprite': pygame.image.load("resources/playerModel/down.png").convert(),
+                'up_sprite': pygame.image.load("resources/playerModel/up.png").convert(),
+                'hurt_sprite': pygame.image.load("resources/playerModel/hurt.png").convert(),
+                'death_sprite': pygame.image.load("resources/playerModel/death.png").convert(),
             },
             'health_bar': [
-                pygame.image.load(f"resources/HP_Bar/{id}.png") for id in range(11)
+                pygame.image.load(f"resources/HP_Bar/{id}.png").convert() for id in range(11)
             ]
         }
 
@@ -118,7 +123,7 @@ class GameEngine(object):
         self.component_manager.add_component(player, rigidbody)
         player_rect = pygame.Rect(0, 0, self.CHARACTER_WIDTH, self.CHARACTER_HEIGHT)
         anchor = pygame.Vector2(player_rect.center)
-        rect_hitbox = RectHitboxComponent(player_rect, anchor, EntityTypes.PLAYER, [EntityTypes.PLAYER])
+        rect_hitbox = RectHitboxComponent(player_rect, anchor, EntityType.PLAYER, [EntityType.PLAYER])
         self.component_manager.add_component(player, rect_hitbox)
         old_color = pygame.Color(246, 187, 148)
         new_color = pygame.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
@@ -129,11 +134,13 @@ class GameEngine(object):
             'right' : ui.spritesheet.SpriteSheet(sprites['right_sprite'], 16, 16, 250, 6, True, old_color, new_color),
             'down' : ui.spritesheet.SpriteSheet(sprites['down_sprite'], 16, 16, 250, 6, True, old_color, new_color),
             'up' : ui.spritesheet.SpriteSheet(sprites['up_sprite'], 16, 16, 250, 6, True, old_color, new_color),
+            'death' : ui.spritesheet.SpriteSheet(sprites['death_sprite'], 16, 16, 250, 6, True, old_color, new_color),
+            'hurt' : ui.spritesheet.SpriteSheet(sprites['hurt_sprite'], 16, 16, 250, 6, True, old_color, new_color),
         }
         offset = pygame.Vector2(0, -50)
         sprite = ImageSpriteComponent(player_rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
         self.component_manager.add_component(player, sprite)
-        health = HealthComponent(10)
+        health = HealthComponent(10, EntityType.PLAYER, 0.2)
         self.component_manager.add_component(player, health)
         player_component = PlayerComponent(is_current_player, id)
         self.component_manager.add_component(player, player_component)
@@ -149,7 +156,7 @@ class GameEngine(object):
         self.component_manager.add_component(opponent, rigidbody)
         opponent_rect = pygame.Rect(0, 0, self.OPPONENT_WIDTH, self.OPPONENT_HEIGHT)
         anchor = pygame.Vector2(opponent_rect.center)
-        rect_hitbox = RectHitboxComponent(opponent_rect, anchor, EntityTypes.ENEMY, [EntityTypes.ENEMY])
+        rect_hitbox = RectHitboxComponent(opponent_rect, anchor, EntityType.ENEMY, [EntityType.PLAYER])
         self.component_manager.add_component(opponent, rect_hitbox)
         sprites = self.sprites['demon']
         sprite_sheets = {
@@ -162,8 +169,12 @@ class GameEngine(object):
         offset = pygame.Vector2(34, -50)
         sprite = ImageSpriteComponent(opponent_rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
         self.component_manager.add_component(opponent, sprite)
-        health = HealthComponent(10)
+        health = HealthComponent(10, EntityType.ENEMY, 0.1)
         self.component_manager.add_component(opponent, health)
+        enemy_ai = EnemyAiComponent(AiType.BASIC)
+        self.component_manager.add_component(opponent, enemy_ai)
+        damage = DamageComponent(1, True, [EntityType.ENEMY])
+        self.component_manager.add_component(opponent, damage)
         return opponent
 
     def update(self):
