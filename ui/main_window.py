@@ -45,6 +45,7 @@ class MainWindow(object):
 
     def fill_background(self):
         image = self.scaled_image
+        self.screen.fill(pygame.Color(43, 42, 41))
         self.screen.blit(image, (0, 0))
 
     def close(self):

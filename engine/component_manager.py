@@ -22,7 +22,7 @@ class ComponentManager(object):
 
     def get_component(self, entity: Entity, component_type: type):
         try:
-            return self.components[entity][component_type]
+            return self.components[entity.id][component_type]
         except KeyError:
             return None
 

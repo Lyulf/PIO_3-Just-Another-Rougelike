@@ -34,6 +34,7 @@ class GameEngine(object):
         self.add_system(2, CollisionSystem)
         self.add_system(3, HealthSystem)
         self.add_system(4, RenderSystem)
+        self.add_system(4, RenderSidebarSystem)
 
     def add_system(self, priority: int, system_type: type, *additional_args):
         self.system_manager.add_system(priority, system_type(self.entity_manager, self.component_manager, *additional_args))
@@ -53,7 +54,10 @@ class GameEngine(object):
                 'right_sprite': pygame.image.load("resources/playerModel/right.png"),
                 'down_sprite': pygame.image.load("resources/playerModel/down.png"),
                 'up_sprite': pygame.image.load("resources/playerModel/up.png"),
-            }
+            },
+            'health_bar': [
+                pygame.image.load(f"resources/HP_Bar/{id}.png") for id in range(11)
+            ]
         }
 
     def create(self):
@@ -80,7 +84,7 @@ class GameEngine(object):
             for j in range(columns):
                 y = (i % rows + 1) * spacing_y
                 x = (j % columns + 1) * spacing_x
-                player = self.__create_player(x, y)
+                player = self.__create_player(x, y, False)
                 players[k - number_of_players] = player
                 k += 1
         return players
@@ -106,7 +110,7 @@ class GameEngine(object):
                 k += 1
         return opponents
 
-    def __create_player(self, x, y):
+    def __create_player(self, x, y, is_current_player, id=None):
         player = self.entity_manager.create_entity()
         transform = TransformComponent(pygame.Vector2(x, y), 0, pygame.Vector2(1, 1))
         self.component_manager.add_component(player, transform)
@@ -131,6 +135,10 @@ class GameEngine(object):
         self.component_manager.add_component(player, sprite)
         health = HealthComponent(10)
         self.component_manager.add_component(player, health)
+        player_component = PlayerComponent(is_current_player, id)
+        self.component_manager.add_component(player, player_component)
+        sidebar_health_bar = PlayerSidebarHealthBarComponent(self.sprites['health_bar'])
+        self.component_manager.add_component(player, sidebar_health_bar)
         return player
 
     def __create_opponent(self, x, y):

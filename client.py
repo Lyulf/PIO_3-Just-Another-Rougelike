@@ -4,6 +4,7 @@ from ui.main_window import MainWindow
 from utils.errors.user_error import UserError
 from utils.layers import Layers
 from components.controls_component import Controls, ControlsComponent
+from components.player_component import PlayerComponent
 from systems.user_input_system import UserInputSystem
 from utils.delta_time import *
 
@@ -42,6 +43,9 @@ class Client(object):
         self.engine.spawn_opponents(8)
         controls = ControlsComponent(self.custom_keys)
         self.engine.component_manager.add_component(self.player, controls)
+        player_component = self.engine.component_manager.get_component(self.player, PlayerComponent)
+        player_component.is_current_player = True
+
         self.engine.create()
 
     def loop(self):
