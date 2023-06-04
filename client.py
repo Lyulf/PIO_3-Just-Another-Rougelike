@@ -60,9 +60,6 @@ class Client(object):
             if event.type == pygame.QUIT:
                 self.__running = False
                 return
-            elif event.type == pygame.KEYDOWN:
-                if event.key == self.custom_keys[Controls.SHOOT]:
-                    user_inputs_system.keys_down.append(self.custom_keys[Controls.SHOOT])
         keys = pygame.key.get_pressed()
         user_inputs_system.held_keys = keys
 

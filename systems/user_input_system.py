@@ -16,14 +16,13 @@ class UserInputSystem(System):
             except (TypeError, KeyError):
                 continue
             try:
-                keys_down = self.keys_down.copy()
-                while True:
-                    button = keys_down.pop(0)
-                    if button == controls.custom_keys[Controls.SHOOT]:
-                        self.__spawn_projectile(entity)
+                mouse_pos = pygame.mouse.get_pos()
+                mouse_vector = pygame.Vector2(*mouse_pos)
+                pygame.event.get()
+                if pygame.mouse.get_pressed()[0]:
+                    self.__spawn_projectile(entity, mouse_vector)
             except IndexError:
                 pass
-
             direction = pygame.Vector2()
             if self.held_keys[controls.custom_keys[Controls.UP]]:
                 direction.y -= 1
@@ -39,7 +38,7 @@ class UserInputSystem(System):
                 rigidbody.direction = pygame.Vector2()
         self.keys_down = []
         
-    def __spawn_projectile(self, entity):
+    def __spawn_projectile(self, entity, mouse_vector):
         projectile = self.entity_manager.create_entity()
         entity_components = self.component_manager.get_components(entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
         try:
@@ -53,10 +52,11 @@ class UserInputSystem(System):
             entity_transform.scale.copy(),
         )
         self.component_manager.add_component(projectile, projectile_transform)
+        projectile_direction = (mouse_vector - entity_transform.position).normalize()
         projectile_rigidbody = RigidbodyComponent(
             3,
             CollisionType.KINETIC,
-            entity_rigidbody.direction.copy() if entity_rigidbody.direction != pygame.Vector2() else pygame.Vector2(0, 1),
+            projectile_direction,
         )
         self.component_manager.add_component(projectile, projectile_rigidbody)
         rect = pygame.Rect(0, 0, 20, 20)
