@@ -15,7 +15,7 @@ class RenderSidebarSystem(System):
             except (TypeError, KeyError):
                 continue
             try:
-                sprite = health_bar.sprites[health.current_health]
+                sprite = health_bar.sprites[max(health.current_health, 0)]
                 width = 200
                 aspect_ratio = sprite.get_width() // sprite.get_height()
                 height = width // aspect_ratio
