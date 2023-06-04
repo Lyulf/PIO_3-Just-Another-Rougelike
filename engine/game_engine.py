@@ -30,11 +30,12 @@ class GameEngine(object):
         self.sprites = None
 
         self.add_system(0, UserInputSystem)
-        self.add_system(1, MovementSystem)
-        self.add_system(2, CollisionSystem)
-        self.add_system(3, HealthSystem)
-        self.add_system(4, RenderSystem)
-        self.add_system(4, RenderSidebarSystem)
+        self.add_system(1, EnemyAiSystem)
+        self.add_system(2, MovementSystem)
+        self.add_system(3, CollisionSystem)
+        self.add_system(4, HealthSystem)
+        self.add_system(5, RenderSystem)
+        self.add_system(5, RenderSidebarSystem)
 
     def add_system(self, priority: int, system_type: type, *additional_args):
         self.system_manager.add_system(priority, system_type(self.entity_manager, self.component_manager, *additional_args))
@@ -164,6 +165,8 @@ class GameEngine(object):
         self.component_manager.add_component(opponent, sprite)
         health = HealthComponent(10)
         self.component_manager.add_component(opponent, health)
+        enemy_ai = EnemyAiComponent(AiType.BASIC)
+        self.component_manager.add_component(opponent, enemy_ai)
         return opponent
 
     def update(self):
