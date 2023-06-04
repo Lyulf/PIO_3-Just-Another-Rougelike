@@ -156,7 +156,7 @@ class GameEngine(object):
         self.component_manager.add_component(opponent, rigidbody)
         opponent_rect = pygame.Rect(0, 0, self.OPPONENT_WIDTH, self.OPPONENT_HEIGHT)
         anchor = pygame.Vector2(opponent_rect.center)
-        rect_hitbox = RectHitboxComponent(opponent_rect, anchor, EntityType.ENEMY)
+        rect_hitbox = RectHitboxComponent(opponent_rect, anchor, EntityType.ENEMY, [EntityType.PLAYER])
         self.component_manager.add_component(opponent, rect_hitbox)
         sprites = self.sprites['demon']
         sprite_sheets = {
