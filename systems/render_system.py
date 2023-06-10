@@ -46,6 +46,7 @@ class RenderSystem(System):
                 if image_sprite.current_sprite.is_finished:
                     image_sprite.current_sprite.is_finished = False
                     image_sprite.current_sprite = image_sprite.sprite_sheets['idle']
+                    image_sprite.current_sprite.synchronize_animation()
             except KeyError:
                 pass
 

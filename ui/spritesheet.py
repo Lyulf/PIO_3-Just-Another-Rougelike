@@ -38,7 +38,7 @@ class SpriteSheet:
 
         # Update the current frame if enough time has passed
         if current_time - self.last_update_time > self.animation_speed:
-            self.current_frame = (current_time // self.animation_speed) % len(self.sprites)
+            self.current_frame = (self.current_frame + 1) % len(self.sprites)
             self.last_update_time = current_time
         if self.current_frame + 1 == len(self.sprites):
             self.is_finished = True
@@ -74,3 +74,8 @@ class SpriteSheet:
         modified_image = pygame.surfarray.make_surface(pixel_array)
 
         return modified_image
+
+    def synchronize_animation(self):
+        current_time = pygame.time.get_ticks()
+        self.current_frame = (current_time // self.animation_speed) % len(self.sprites)
+        self.last_update_time = current_time
