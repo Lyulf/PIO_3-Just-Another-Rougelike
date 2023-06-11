@@ -27,8 +27,9 @@ class RenderSystem(System):
             try:
                 rigidbody = components[RigidbodyComponent]
                 image_sprite = components[ImageSpriteComponent]
-                try:
-                    if image_sprite.current_sprite in (image_sprite.sprite_sheets[key] for key in ('idle', 'up', 'down', 'left', 'right')):
+                movement_sprites = filter(None, (image_sprite.sprite_sheets.get(key) for key in ('idle', 'up', 'down', 'left', 'right', 'walk')))
+                if image_sprite.current_sprite in movement_sprites:
+                    try:
                         if rigidbody.direction.x > 0:
                             image_sprite.current_sprite = image_sprite.sprite_sheets['right']
                         elif rigidbody.direction.x < 0:
@@ -37,8 +38,11 @@ class RenderSystem(System):
                             image_sprite.current_sprite = image_sprite.sprite_sheets['down']
                         elif rigidbody.direction.y < 0:
                             image_sprite.current_sprite = image_sprite.sprite_sheets['up']
-                except KeyError:
-                    pass
+                    except KeyError:
+                        try:
+                            image_sprite.current_sprite = image_sprite.sprite_sheets['walk']
+                        except KeyError:
+                            pass
 
                 rect = image_sprite.rect.move(transform.position - image_sprite.anchor)
                 sprites.append((image_sprite.current_sprite, rect, image_sprite.offset))
