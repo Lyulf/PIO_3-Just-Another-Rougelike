@@ -21,7 +21,7 @@ class ComponentManager(object):
         if not component_types:
             return components
         else:
-            components = {component_type: component for component_type, component in components.items() if component_type in component_types}
+            components = {component_type: component for component_type, component in components.items() if issubclass(component_type, component_types)}
             return components
 
     def get_component(self, entity: Entity, component_type: type):

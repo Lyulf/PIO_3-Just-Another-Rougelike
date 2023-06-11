@@ -30,7 +30,11 @@ class SpriteSheet:
                 x = col * sprite_width
                 y = row * sprite_height
                 rect = pygame.Rect(x, y, sprite_width, sprite_height)
-                self.sprites.append(self.sprite_sheet.subsurface(rect))
+
+                # Scale the sprite to the desired size
+                sprite = pygame.transform.scale(self.sprite_sheet.subsurface(rect),
+                                                (self.sprite_width * self.scale, self.sprite_height * self.scale))
+                self.sprites.append(sprite)
 
         self.current_frame = 0
         self.last_update_time = 0
@@ -39,18 +43,18 @@ class SpriteSheet:
         current_time = pygame.time.get_ticks()
 
         # Update the current frame if enough time has passed
-        if current_time - self.last_update_time > self.animation_speed:
+        if self.animation_speed == 0:
+            pass
+        elif current_time - self.last_update_time > self.animation_speed:
             self.current_frame = (self.current_frame + 1) % len(self.sprites)
             self.last_update_time = current_time
         if self.current_frame + 1 == len(self.sprites):
             self.is_finished = True
 
+        sprite = self.sprites[self.current_frame]
+
         sprite_x = rect.x - (self.sprite_width * self.scale - rect.width) / 2 + offset_x
         sprite_y = rect.y - (self.sprite_height * self.scale - rect.height) / 2 + offset_y
-
-        # Scale the sprite to the desired size
-        sprite = pygame.transform.scale(self.sprites[self.current_frame],
-                                        (self.sprite_width * self.scale, self.sprite_height * self.scale))
 
         # Draw the sprite on the surface at the given position
         surface.blit(sprite, (sprite_x, sprite_y))
@@ -78,6 +82,8 @@ class SpriteSheet:
         return modified_image
 
     def synchronize_animation(self):
+        if self.animation_speed == 0:
+            return
         current_time = pygame.time.get_ticks()
         self.current_frame = (current_time // self.animation_speed) % len(self.sprites)
         self.last_update_time = current_time

@@ -1,10 +1,12 @@
-from systems.system import System
+from typing import TYPE_CHECKING
+if TYPE_CHECKING:
+    from systems.system import System
 
 class SystemManager(object):
     def __init__(self):
         self.systems = {}
 
-    def add_system(self, priority: int, system: System):
+    def add_system(self, priority: int, system: 'System'):
         try:
             self.systems[priority].add(system)
         except KeyError:
@@ -21,7 +23,7 @@ class SystemManager(object):
             for system in systems:
                 yield system
 
-    def remove_system(self, priority: int, system: System):
+    def remove_system(self, priority: int, system: 'System'):
         try:
             self.systems[priority][system]
         except KeyError:

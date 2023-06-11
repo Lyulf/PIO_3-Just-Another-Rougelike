@@ -2,7 +2,7 @@ from systems.system import *
 from entities.entity import Entity
 
 class DamageSystem(System):
-    def on_update(self):
+    def on_fixed_update(self):
         entities = self.entity_manager.get_entities()
         ticks = pygame.time.get_ticks()
         for idx, lhs_entity in enumerate(entities):

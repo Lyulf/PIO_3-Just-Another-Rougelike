@@ -5,11 +5,11 @@ from utils.resources import get_sprite
 import random
 
 class PlayerPrefab(Prefab):
-    SPEED = 1
+    SPEED = 1000
     WIDTH = 50
-    HEIGHT = 50
+    HEIGHT = 30
     COLOR = pygame.Color(246, 187, 148)
-    SPRITE_OFFSET = pygame.Vector2(0, -50)
+    SPRITE_OFFSET = pygame.Vector2(0, -35)
     GRACE_PERIOD = 0.2
 
     def __init__(self, id):
@@ -28,7 +28,7 @@ class PlayerPrefab(Prefab):
                 'death_sprite': get_sprite("resources/playerModel/death.png", False),
             },
             'health_bar': [
-                get_sprite(f"resources/HP_Bar/{id}.png", False) for id in range(11)
+                get_sprite(f"resources/HP_Bar/{id}.png", True) for id in range(11)
             ]
         }
 

@@ -3,7 +3,7 @@ from utils.border import get_border
 from entities.entity import Entity
 
 class CollisionSystem(System):
-    def on_update(self):
+    def on_fixed_update(self):
         entities = self.entity_manager.get_entities()
         for lhs_idx, lhs_entity in enumerate(entities):
             lhs_components = self.component_manager.get_components(

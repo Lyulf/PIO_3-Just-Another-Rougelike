@@ -4,7 +4,7 @@ from prefabs.prefab import *
 from utils.resources import get_sprite
 
 class DemonPrefab(Prefab):
-    SPEED = 0.2
+    SPEED = 200
     WIDTH = 50
     HEIGHT = 50
 
