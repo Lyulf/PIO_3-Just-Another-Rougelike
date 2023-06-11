@@ -44,39 +44,24 @@ class UserInputSystem(System):
         self.keys_down = []
 
     def __spawn_projectile(self, entity, mouse_vector):
-        projectile = self.entity_manager.create_entity()
-        entity_components = self.component_manager.get_components(entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
+        entity_components = self.component_manager.get_components(entity, TransformComponent, RectHitboxComponent)
         try:
             entity_transform = entity_components[TransformComponent]
-            entity_rigidbody = entity_components[RigidbodyComponent]
         except (TypeError, KeyError):
             return
-        projectile_transform = TransformComponent(
-            entity_transform.position.copy(),
-            entity_transform.rotation,
-            entity_transform.scale.copy(),
-        )
-        self.component_manager.add_component(projectile, projectile_transform)
-        projectile_direction = (mouse_vector - entity_transform.position).normalize()
-        projectile_rigidbody = RigidbodyComponent(
-            3,
-            CollisionType.KINETIC,
-            projectile_direction,
-        )
-        self.component_manager.add_component(projectile, projectile_rigidbody)
-        rect = pygame.Rect(0, 0, 20, 20)
-        anchor = pygame.Vector2(rect.center)
-        ignore_entity_types = [EntityType.PROJECTILE]
+
+        projectile = self.prefab_manager.spawn('basic_projectile', entity_transform.position)
+        projectile_components = self.component_manager.get_components(projectile, RigidbodyComponent, DamageComponent)
+        projectile_rigidbody = projectile_components[RigidbodyComponent]
+        try:
+            projectile_rigidbody.direction = mouse_vector - entity_transform.position
+            projectile_rigidbody.direction.normalize_ip()
+        except ValueError:
+            projectile_rigidbody.direction = pygame.Vector2()
+
+        projectile_damage = projectile_components[DamageComponent]
         try:
             entity_rect_hitbox = entity_components[RectHitboxComponent]
-            ignore_entity_types.append(entity_rect_hitbox.entity_type)
         except KeyError:
-            pass
-        projectile_rect_hitbox = RectHitboxComponent(
-            rect, anchor, EntityType.PROJECTILE, ignore_entity_types
-        )
-        self.component_manager.add_component(projectile, projectile_rect_hitbox)
-        projectile_rect_sprite = RectSpriteComponent(rect, anchor, 'green')
-        self.component_manager.add_component(projectile, projectile_rect_sprite)
-        damage = DamageComponent(1, False, ignore_entity_types)
-        self.component_manager.add_component(projectile, damage)
+            return
+        projectile_damage.ignore_entity_types.append(entity_rect_hitbox.entity_type)

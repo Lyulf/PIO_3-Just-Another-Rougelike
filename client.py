@@ -38,7 +38,6 @@ class Client(object):
     def init(self):
         """Initialization before gameplay loop."""
         self.window.show()
-        self.engine.load_images()
         self.player = self.engine.spawn_players(1)[0]
         self.engine.spawn_opponents(2)
         controls = ControlsComponent(self.custom_keys)

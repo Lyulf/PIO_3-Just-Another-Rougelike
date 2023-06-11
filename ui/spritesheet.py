@@ -1,5 +1,7 @@
 import pygame
 import numpy as np
+
+
 class SpriteSheet:
     def __init__(self, image, sprite_width, sprite_height, animation_speed, scale, random_color=False, old_color=None, new_color=None):
         self.sprite_width = sprite_width

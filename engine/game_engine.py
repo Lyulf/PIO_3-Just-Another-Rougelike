@@ -2,32 +2,26 @@ import math
 import pickle
 import pygame
 import random
-import ui.spritesheet
-
 from engine.entity_manager import EntityManager
 from engine.component_manager import ComponentManager
 from engine.system_manager import SystemManager
+from engine.prefab_manager import PrefabManager
 
 from entities import *
 from systems import *
+from prefabs import *
 
 from utils.delta_time import *
 from utils.border import get_border
 
 class GameEngine(object):
     """Class handling game physics."""
-    CHARACTER_WIDTH = 50
-    CHARACTER_HEIGHT = 50
-    OPPONENT_WIDTH = 50
-    OPPONENT_HEIGHT = 50
-    OPPONENT_SPEED = 0.2
-    PLAYER_SPEED = 1
 
     def __init__(self):
         self.entity_manager = EntityManager()
         self.component_manager = ComponentManager()
         self.system_manager = SystemManager()
-        self.sprites = None
+        self.prefab_manager = PrefabManager(self.entity_manager, self.component_manager)
 
         self.add_system(0, UserInputSystem)
         self.add_system(1, EnemyAiSystem)
@@ -38,32 +32,20 @@ class GameEngine(object):
         self.add_system(6, RenderSystem)
         self.add_system(6, RenderSidebarSystem)
 
-    def add_system(self, priority: int, system_type: type, *additional_args):
-        self.system_manager.add_system(priority, system_type(self.entity_manager, self.component_manager, *additional_args))
+        for player_id in range(4):
+            self.prefab_manager.set_prefab(f'player{player_id + 1}', PlayerPrefab(player_id))
 
-    def load_images(self):
-        self.sprites = {
-            'demon': {
-                'idle_sprite': pygame.image.load("resources/enemies/demon/idle.png").convert_alpha(),
-                'walk_sprite': pygame.image.load("resources/enemies/demon/walk.png").convert_alpha(),
-                'hurt_sprite': pygame.image.load("resources/enemies/demon/hurt.png").convert_alpha(),
+        self.prefab_manager.set_prefab('demon', DemonPrefab())
+        self.prefab_manager.set_prefab('basic_projectile', BasicProjectilePrefab('green'))
 
-                'attack_sprite': pygame.image.load("resources/enemies/demon/attack.png").convert_alpha(),
-                'death_sprite': pygame.image.load("resources/enemies/demon/death.png").convert_alpha(),
-            },
-            'player': {
-                'idle_sprite': pygame.image.load("resources/playerModel/idle.png").convert(),
-                'left_sprite': pygame.image.load("resources/playerModel/left.png").convert(),
-                'right_sprite': pygame.image.load("resources/playerModel/right.png").convert(),
-                'down_sprite': pygame.image.load("resources/playerModel/down.png").convert(),
-                'up_sprite': pygame.image.load("resources/playerModel/up.png").convert(),
-                'hurt_sprite': pygame.image.load("resources/playerModel/hurt.png").convert(),
-                'death_sprite': pygame.image.load("resources/playerModel/death.png").convert(),
-            },
-            'health_bar': [
-                pygame.image.load(f"resources/HP_Bar/{id}.png").convert() for id in range(11)
-            ]
-        }
+    def add_system(self, priority: int, system_type: type, *args, **kwargs):
+        system = system_type(
+            self.entity_manager,
+            self.component_manager,
+            self.prefab_manager,
+            *args,
+            **kwargs)
+        self.system_manager.add_system(priority, system)
 
     def create(self):
         for system in self.system_manager.get_systems():
@@ -89,7 +71,7 @@ class GameEngine(object):
             for j in range(columns):
                 y = (i % rows + 1) * spacing_y
                 x = (j % columns + 1) * spacing_x
-                player = self.__create_player(x, y, False)
+                player = self.__create_player((x, y), k)
                 players[k - number_of_players] = player
                 k += 1
         return players
@@ -110,72 +92,16 @@ class GameEngine(object):
             for j in range(columns):
                 y = (i % rows + 1) * spacing_y
                 x = (j % columns + 1) * spacing_x
-                opponent = self.__create_opponent(x, y)
+                opponent = self.__create_opponent((x, y))
                 opponents[k - number_of_opponents] = opponent
                 k += 1
         return opponents
 
-    def __create_player(self, x, y, is_current_player, id=None):
-        player = self.entity_manager.create_entity()
-        transform = TransformComponent(pygame.Vector2(x, y), 0, pygame.Vector2(1, 1))
-        self.component_manager.add_component(player, transform)
-        rigidbody = RigidbodyComponent(self.PLAYER_SPEED)
-        self.component_manager.add_component(player, rigidbody)
-        player_rect = pygame.Rect(0, 0, self.CHARACTER_WIDTH, self.CHARACTER_HEIGHT)
-        anchor = pygame.Vector2(player_rect.center)
-        rect_hitbox = RectHitboxComponent(player_rect, anchor, EntityType.PLAYER, [EntityType.PLAYER])
-        self.component_manager.add_component(player, rect_hitbox)
-        old_color = pygame.Color(246, 187, 148)
-        new_color = pygame.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
-        sprites = self.sprites['player']
-        sprite_sheets = {
-            'idle' : ui.spritesheet.SpriteSheet(sprites['idle_sprite'], 16, 16, 500, 6, True, old_color, new_color),
-            'left' : ui.spritesheet.SpriteSheet(sprites['left_sprite'], 16, 16, 250, 6, True, old_color, new_color),
-            'right' : ui.spritesheet.SpriteSheet(sprites['right_sprite'], 16, 16, 250, 6, True, old_color, new_color),
-            'down' : ui.spritesheet.SpriteSheet(sprites['down_sprite'], 16, 16, 250, 6, True, old_color, new_color),
-            'up' : ui.spritesheet.SpriteSheet(sprites['up_sprite'], 16, 16, 250, 6, True, old_color, new_color),
-            'death' : ui.spritesheet.SpriteSheet(sprites['death_sprite'], 16, 16, 250, 6, True, old_color, new_color),
-            'hurt' : ui.spritesheet.SpriteSheet(sprites['hurt_sprite'], 16, 16, 250, 6, True, old_color, new_color),
-        }
-        offset = pygame.Vector2(0, -50)
-        sprite = ImageSpriteComponent(player_rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
-        self.component_manager.add_component(player, sprite)
-        health = HealthComponent(10, EntityType.PLAYER, 0.2)
-        self.component_manager.add_component(player, health)
-        player_component = PlayerComponent(is_current_player, id)
-        self.component_manager.add_component(player, player_component)
-        sidebar_health_bar = PlayerSidebarHealthBarComponent(self.sprites['health_bar'])
-        self.component_manager.add_component(player, sidebar_health_bar)
-        return player
+    def __create_player(self, position, id):
+        return self.prefab_manager.spawn(f'player{id + 1}', position)
 
-    def __create_opponent(self, x, y):
-        opponent = self.entity_manager.create_entity()
-        transform = TransformComponent(pygame.Vector2(x, y), 0, pygame.Vector2(1, 1))
-        self.component_manager.add_component(opponent, transform)
-        rigidbody = RigidbodyComponent(self.OPPONENT_SPEED)
-        self.component_manager.add_component(opponent, rigidbody)
-        opponent_rect = pygame.Rect(0, 0, self.OPPONENT_WIDTH, self.OPPONENT_HEIGHT)
-        anchor = pygame.Vector2(opponent_rect.center)
-        rect_hitbox = RectHitboxComponent(opponent_rect, anchor, EntityType.ENEMY, [EntityType.PLAYER])
-        self.component_manager.add_component(opponent, rect_hitbox)
-        sprites = self.sprites['demon']
-        sprite_sheets = {
-            'idle' : ui.spritesheet.SpriteSheet(sprites['idle_sprite'], 256, 256, 350, 1, False),
-            'walk' : ui.spritesheet.SpriteSheet(sprites['walk_sprite'], 256, 256, 100, 1, False),
-            'hurt' : ui.spritesheet.SpriteSheet(sprites['hurt_sprite'], 256, 256, 100, 1, False),
-            'attack' : ui.spritesheet.SpriteSheet(sprites['attack_sprite'], 256, 256, 100, 1, False),
-            'death' : ui.spritesheet.SpriteSheet(sprites['death_sprite'], 256, 256, 100, 1, False),
-        }
-        offset = pygame.Vector2(34, -50)
-        sprite = ImageSpriteComponent(opponent_rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
-        self.component_manager.add_component(opponent, sprite)
-        health = HealthComponent(10, EntityType.ENEMY, 0.1)
-        self.component_manager.add_component(opponent, health)
-        enemy_ai = EnemyAiComponent(AiType.BASIC)
-        self.component_manager.add_component(opponent, enemy_ai)
-        damage = DamageComponent(1, True, [EntityType.ENEMY])
-        self.component_manager.add_component(opponent, damage)
-        return opponent
+    def __create_opponent(self, position):
+        return self.prefab_manager.spawn('demon', position)
 
     def update(self):
         """Update systems"""

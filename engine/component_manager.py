@@ -6,6 +6,10 @@ class ComponentManager(object):
     def __init__(self):
         self.components = {}
 
+    def add_components(self, entity: Entity, *components: Component):
+        for component in components:
+            self.add_component(entity, component)
+
     def add_component(self, entity: Entity, component: Component):
         try:
             self.components[entity.id][type(component)] = component
