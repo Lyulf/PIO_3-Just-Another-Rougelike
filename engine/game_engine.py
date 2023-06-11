@@ -37,6 +37,7 @@ class GameEngine(object):
 
         self.prefab_manager.set_prefab('demon', DemonPrefab())
         self.prefab_manager.set_prefab('basic_projectile', BasicProjectilePrefab('green'))
+        self.prefab_manager.set_prefab('item', ItemPrefab())
 
     def add_system(self, priority: int, system_type: type, *args, **kwargs):
         system = system_type(
@@ -102,6 +103,7 @@ class GameEngine(object):
 
     def __create_opponent(self, position):
         return self.prefab_manager.spawn('demon', position)
+
 
     def update(self):
         """Update systems"""
