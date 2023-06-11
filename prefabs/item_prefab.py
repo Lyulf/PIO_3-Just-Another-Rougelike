@@ -28,5 +28,7 @@ class ItemPrefab(Prefab):
         offset = pygame.Vector2(0, 0)
         sprite = ImageSpriteComponent(rect.copy(), anchor.copy(), sprite_sheets, 'upgrade', offset)
         self._add_component(components, sprite)
+        item_component = ItemComponent()
+        self._add_component(components, item_component)
 
         return components

@@ -3,7 +3,7 @@ import math
 from systems.system import *
 
 class EnemyAiSystem(System):
-    def on_update(self):
+    def on_fixed_update(self):
         entities = self.entity_manager.get_entities()
         player_positions = []
         for entity in entities:

@@ -3,7 +3,7 @@ from utils.border import get_border
 from entities.entity import Entity
 
 class CollisionSystem(System):
-    def on_update(self):
+    def on_fixed_update(self):
         entities = self.entity_manager.get_entities()
         for lhs_idx, lhs_entity in enumerate(entities):
             lhs_components = self.component_manager.get_components(
@@ -35,10 +35,12 @@ class CollisionSystem(System):
         rect = rect_hitbox.rect.move(transform.position - rect_hitbox.anchor)
         new_rect = rect.clamp(border)
         delta_position = pygame.Vector2(new_rect.center) - pygame.Vector2(rect.center)
-        if rect_hitbox.entity_type == EntityType.PROJECTILE and any(delta_position):
-            entity.is_alive = False
-            return
-        transform.position += delta_position
+        if any(delta_position):
+            if rect_hitbox.entity_type == EntityType.PROJECTILE:
+                entity.is_alive = False
+                return
+            transform.position += delta_position
+            rigidbody.direction = pygame.Vector2()
 
     def __collide_entity(self, lhs_entity, lhs_components, rhs_entity, rhs_components):
         lhs_transform = lhs_components[TransformComponent]
@@ -86,5 +88,7 @@ class CollisionSystem(System):
             delta_position //= 2
         if lhs_rigidbody.collision_type == CollisionType.DYNAMIC:
             lhs_transform.position += delta_position
+            lhs_rigidbody.direction = pygame.Vector2()
         if rhs_rigidbody.collision_type == CollisionType.DYNAMIC:
             rhs_transform.position -= delta_position
+            rhs_rigidbody.direction = pygame.Vector2()

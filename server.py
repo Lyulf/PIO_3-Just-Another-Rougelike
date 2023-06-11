@@ -20,9 +20,8 @@ class Server(object):
         self.__running = False
         self.clients = []
         self.event_loop = None
-        self.engine = GameEngine()
+        self.engine = GameEngine((self.WIDTH, self.HEIGHT))
         self.rect = pygame.Rect(0, 0, self.WIDTH, self.HEIGHT)
-        self.engine.set_background_rect(self.rect)
 
     def start(self):
         """Starts server loops"""
