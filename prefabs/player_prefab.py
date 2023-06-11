@@ -35,7 +35,7 @@ class PlayerPrefab(Prefab):
     def create(self, position):
         components = super().create(position)
 
-        rigidbody = RigidbodyComponent(self.SPEED)
+        rigidbody = RigidbodyComponent(self.SPEED, CollisionType.DYNAMIC)
         self._add_component(components, rigidbody)
 
         player_rect = pygame.Rect(0, 0, self.WIDTH, self.HEIGHT)

@@ -10,6 +10,29 @@ class UserInputSystem(System):
         self.held_keys = {}
         self.last_spawn_time = 0
 
+    def on_fixed_update(self):
+        for entity in self.entity_manager.get_entities():
+            components = self.component_manager.get_components(entity, ControlsComponent, RigidbodyComponent)
+            try:
+                controls = components[ControlsComponent]
+                rigidbody = components[RigidbodyComponent]
+            except (TypeError, KeyError):
+                continue
+
+            direction = pygame.Vector2()
+            if self.held_keys[controls.custom_keys[Controls.UP]]:
+                direction.y -= 1
+            if self.held_keys[controls.custom_keys[Controls.DOWN]]:
+                direction.y += 1
+            if self.held_keys[controls.custom_keys[Controls.LEFT]]:
+                direction.x -= 1
+            if self.held_keys[controls.custom_keys[Controls.RIGHT]]:
+                direction.x += 1
+            try:
+                rigidbody.direction = direction.normalize()
+            except ValueError:
+                rigidbody.direction = pygame.Vector2()
+
     def on_update(self):
         delay_time = 250  # Delay time in milliseconds (0.5 seconds)
         camera = None
@@ -85,20 +108,6 @@ class UserInputSystem(System):
                         current_interaction(entity, current_interactable_entity)
             except IndexError:
                 pass
-
-            direction = pygame.Vector2()
-            if self.held_keys[controls.custom_keys[Controls.UP]]:
-                direction.y -= 1
-            if self.held_keys[controls.custom_keys[Controls.DOWN]]:
-                direction.y += 1
-            if self.held_keys[controls.custom_keys[Controls.LEFT]]:
-                direction.x -= 1
-            if self.held_keys[controls.custom_keys[Controls.RIGHT]]:
-                direction.x += 1
-            try:
-                rigidbody.direction = direction.normalize()
-            except ValueError:
-                rigidbody.direction = pygame.Vector2()
         self.keys_down = []
 
     def __spawn_projectile(self, entity, mouse_vector):
