@@ -1,12 +1,15 @@
+import random
 from systems.system import *
 
 class HealthSystem(System):
     def on_update(self):
         for entity in self.entity_manager.get_entities():
-            components = self.component_manager.get_components(entity, HealthComponent, ImageSpriteComponent)
+            components = self.component_manager.get_components(entity, HealthComponent, ImageSpriteComponent,
+                                                               TransformComponent)
             try:
                 health = components[HealthComponent]
                 image_sprite = components[ImageSpriteComponent]
+                transform = components[TransformComponent]
             except (TypeError, KeyError):
                 continue
 
@@ -14,6 +17,8 @@ class HealthSystem(System):
                 try:
                     image_sprite.current_sprite = image_sprite.sprite_sheets['death']
                     if image_sprite.current_sprite.is_finished:
+                        if health.entity_type == EntityType.ENEMY and random.random() < 0.5:
+                            self.prefab_manager.spawn('item', transform.position)
                         entity.is_alive = False
                 except KeyError:
                     entity.is_alive = False
