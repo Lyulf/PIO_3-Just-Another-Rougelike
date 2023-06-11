@@ -53,6 +53,10 @@ class CollisionSystem(System):
             raise TypeError()
         if rhs_rigidbody.collision_type == CollisionType.NONE:
             raise TypeError()
+        if lhs_rigidbody.collision_type == CollisionType.KINETIC:
+            raise TypeError()
+        if rhs_rigidbody.collision_type == CollisionType.KINETIC:
+            raise TypeError()
         if lhs_rect_hitbox.entity_type in rhs_rect_hitbox.ignore_entity_types:
             raise TypeError()
         if rhs_rect_hitbox.entity_type in lhs_rect_hitbox.ignore_entity_types:
