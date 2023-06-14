@@ -33,9 +33,10 @@ class GameEngine(object):
         self.add_system(4, CollisionSystem)
         self.add_system(5, HealthSystem)
         self.game_state_system = self.add_system(6, GameStateSystem, self.window_size)
-        self.add_system(7, RenderSystem)
-        self.add_system(7, RenderSidebarSystem, self.window_size)
-        self.add_system(8, EnemySpawnSystem)
+        self.add_system(7, EnemySpawnSystem)
+        self.add_system(8, RenderSystem)
+        self.add_system(8, RenderSidebarSystem, self.window_size)
+
 
         for player_id in range(4):
             self.prefab_manager.set_prefab(f'player{player_id + 1}', PlayerPrefab(player_id))
