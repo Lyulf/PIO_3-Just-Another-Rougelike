@@ -1,11 +1,10 @@
 import pygame
 
 from enum import Enum
+
 from systems.collision_system import *
 from systems.damage_system import *
-from systems.system import *
 from systems.user_input_system import *
-
 
 class GameStates(Enum):
     GO_NEXT_AREA = 0

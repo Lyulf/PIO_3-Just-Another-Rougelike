@@ -8,3 +8,4 @@ from systems.render_sidebar_system import *
 from systems.render_system import *
 from systems.system import *
 from systems.user_input_system import *
+from systems.enemy_spawn_system import *

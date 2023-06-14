@@ -35,6 +35,7 @@ class GameEngine(object):
         self.game_state_system = self.add_system(6, GameStateSystem, self.window_size)
         self.add_system(7, RenderSystem)
         self.add_system(7, RenderSidebarSystem, self.window_size)
+        self.add_system(8, EnemySpawnSystem)
 
         for player_id in range(4):
             self.prefab_manager.set_prefab(f'player{player_id + 1}', PlayerPrefab(player_id))
