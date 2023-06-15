@@ -27,20 +27,18 @@ class EnemySpawnSystem(System):
         for entity in self.entity_manager.get_entities():
             if self.component_manager.get_component(entity, EnemyAiComponent):
                 enemies_alive += 1
-        if self.max_enemies_at_once > self.max_enemies_on_stage:
-            self.max_enemies_at_once = self.max_enemies_on_stage
         if self.spawned_enemies == self.max_enemies_on_stage and enemies_alive == 0:
             self.game_state_system.state = GameStates.GO_NEXT_AREA
-        if self.game_state_system.state == GameStates.FIGHTING and enemies_alive != self.max_enemies_at_once \
-                and self.spawned_enemies < self.max_enemies_on_stage:
-            spawn_direction = random.choice(list(SpawnDirection))
-            if spawn_direction == SpawnDirection.LEFT:
-                self.prefab_manager.spawn('demon', pygame.Vector2(-1, 380))
-            elif spawn_direction == SpawnDirection.RIGHT:
-                self.prefab_manager.spawn('demon', pygame.Vector2(961, 380))
-            elif spawn_direction == SpawnDirection.UP:
-                self.prefab_manager.spawn('demon', pygame.Vector2(520, -1))
-            self.spawned_enemies += 1
+        elif self.game_state_system.state == GameStates.FIGHTING:
+            if enemies_alive != self.max_enemies_at_once and self.spawned_enemies < self.max_enemies_on_stage:
+                spawn_direction = random.choice(list(SpawnDirection))
+                if spawn_direction == SpawnDirection.LEFT:
+                    self.prefab_manager.spawn('demon', pygame.Vector2(-1, 380))
+                elif spawn_direction == SpawnDirection.RIGHT:
+                    self.prefab_manager.spawn('demon', pygame.Vector2(961, 380))
+                elif spawn_direction == SpawnDirection.UP:
+                    self.prefab_manager.spawn('demon', pygame.Vector2(520, -1))
+                self.spawned_enemies += 1
 
 
 
