@@ -31,16 +31,16 @@ class DemonPrefab(Prefab):
         self._add_component(components, rect_hitbox)
         sprites = self.sprites['demon']
         sprite_sheets = {
-            'idle' : ui.spritesheet.SpriteSheet(sprites['idle_sprite'], 256, 256, 350, 1, False),
-            'walk' : ui.spritesheet.SpriteSheet(sprites['walk_sprite'], 256, 256, 100, 1, False),
-            'hurt' : ui.spritesheet.SpriteSheet(sprites['hurt_sprite'], 256, 256, 100, 1, False),
-            'attack' : ui.spritesheet.SpriteSheet(sprites['attack_sprite'], 256, 256, 100, 1, False),
-            'death' : ui.spritesheet.SpriteSheet(sprites['death_sprite'], 256, 256, 100, 1, False),
+            'idle': ui.spritesheet.SpriteSheet(sprites['idle_sprite'], 256, 256, 350, 1, False),
+            'walk': ui.spritesheet.SpriteSheet(sprites['walk_sprite'], 256, 256, 100, 1, False),
+            'hurt': ui.spritesheet.SpriteSheet(sprites['hurt_sprite'], 256, 256, 100, 1, False),
+            'attack': ui.spritesheet.SpriteSheet(sprites['attack_sprite'], 256, 256, 100, 1, False),
+            'death': ui.spritesheet.SpriteSheet(sprites['death_sprite'], 256, 256, 100, 1, False),
         }
         offset = pygame.Vector2(34, -50)
         sprite = ImageSpriteComponent(rect.copy(), anchor.copy(), sprite_sheets, 'idle', offset)
         self._add_component(components, sprite)
-        health = HealthComponent(10, EntityType.ENEMY, 0.1)
+        health = HealthComponent(10, EntityType.ENEMY, 0)
         self._add_component(components, health)
         enemy_ai = EnemyAiComponent(AiType.BASIC)
         self._add_component(components, enemy_ai)

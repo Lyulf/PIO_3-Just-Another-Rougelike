@@ -67,4 +67,7 @@ class PlayerPrefab(Prefab):
         sidebar_health_bar = PlayerSidebarHealthBarComponent(self.sprites['health_bar'])
         self._add_component(components, sidebar_health_bar)
 
+        weapon = WeaponComponent(1, 0, 250, WeaponType.PISTOL)
+        self._add_component(components, weapon)
+
         return components

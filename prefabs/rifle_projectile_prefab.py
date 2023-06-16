@@ -1,8 +1,8 @@
 from prefabs.prefab import *
-        
-class BasicProjectilePrefab(Prefab):
+
+class RifleProjectilePrefab(Prefab):
     DAMAGE = 1
-    SPEED = 3000
+    SPEED = 2500
 
     def __init__(self, color):
         super().__init__()
