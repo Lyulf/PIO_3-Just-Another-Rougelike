@@ -2,6 +2,7 @@ import pygame
 
 from components import *
 from systems.system import *
+import random
 
 
 class UserInputSystem(System):
@@ -34,7 +35,6 @@ class UserInputSystem(System):
                 rigidbody.direction = pygame.Vector2()
 
     def on_update(self):
-        delay_time = 250  # Delay time in milliseconds (0.5 seconds)
         camera = None
         for entity in self.entity_manager.get_entities():
             if self.component_manager.get_component(entity, CameraComponent):
@@ -69,10 +69,7 @@ class UserInputSystem(System):
                 mouse_vector = pygame.Vector2(*mouse_pos) + camera_position
                 pygame.event.get()
                 if pygame.mouse.get_pressed()[0]:
-                    current_time = pygame.time.get_ticks()
-                    if current_time - self.last_spawn_time >= delay_time:
-                        self.last_spawn_time = current_time
-                        self.__spawn_projectile(entity, mouse_vector)
+                    self.__spawn_projectile(entity, mouse_vector)
             except IndexError:
                 pass
 
@@ -111,20 +108,39 @@ class UserInputSystem(System):
         self.keys_down = []
 
     def __spawn_projectile(self, entity, mouse_vector):
-        entity_components = self.component_manager.get_components(entity, TransformComponent, RectHitboxComponent)
+        entity_components = self.component_manager.get_components(
+            entity, TransformComponent, RectHitboxComponent, WeaponComponent)
         try:
             entity_transform = entity_components[TransformComponent]
+            entity_weapon = entity_components[WeaponComponent]
         except (TypeError, KeyError):
             return
 
-        projectile = self.prefab_manager.spawn('basic_projectile', entity_transform.position)
-        projectile_components = self.component_manager.get_components(projectile, RigidbodyComponent, DamageComponent)
-        projectile_rigidbody = projectile_components[RigidbodyComponent]
-        try:
-            projectile_rigidbody.direction = mouse_vector - entity_transform.position
-            projectile_rigidbody.direction.normalize_ip()
-        except ValueError:
-            projectile_rigidbody.direction = pygame.Vector2()
+        ticks = pygame.time.get_ticks()
+        if ticks < entity_weapon.last_fire_time + entity_weapon.fire_delay:
+            return
+        entity_weapon.last_fire_time = ticks
+        spread_angle = entity_weapon.spread_angle/2
+        for _ in range (entity_weapon.projectile_count):
+            if entity_weapon.weapon_type == WeaponType.PISTOL:
+                projectile = self.prefab_manager.spawn('pistol_projectile', entity_transform.position)
+            elif entity_weapon.weapon_type == WeaponType.RIFLE:
+                projectile = self.prefab_manager.spawn('rifle_projectile', entity_transform.position)
+            elif entity_weapon.weapon_type == WeaponType.SHOTGUN:
+                projectile = self.prefab_manager.spawn('shotgun_projectile', entity_transform.position)
+            else:
+                raise NotImplementedError('Unknown weapon type')
+
+            projectile_components = self.component_manager.get_components(
+                projectile, RigidbodyComponent, DamageComponent)
+            projectile_rigidbody = projectile_components[RigidbodyComponent]
+            random_spread = random.uniform(-spread_angle, spread_angle)
+            try:
+                projectile_rigidbody.direction = mouse_vector - entity_transform.position
+                projectile_rigidbody.direction.rotate_ip(random_spread)
+                projectile_rigidbody.direction.normalize_ip()
+            except ValueError:
+                projectile_rigidbody.direction = pygame.Vector2()
 
         projectile_damage = projectile_components[DamageComponent]
         try:

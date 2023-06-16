@@ -16,3 +16,4 @@ from components.rect_sprite_component import *
 from components.rigidbody_component import *
 from components.stage_component import *
 from components.transform_component import *
+from components.weapon_component import *

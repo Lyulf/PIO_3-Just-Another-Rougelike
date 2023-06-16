@@ -42,7 +42,9 @@ class GameEngine(object):
             self.prefab_manager.set_prefab(f'player{player_id + 1}', PlayerPrefab(player_id))
 
         self.prefab_manager.set_prefab('demon', DemonPrefab())
-        self.prefab_manager.set_prefab('basic_projectile', BasicProjectilePrefab('green'))
+        self.prefab_manager.set_prefab('pistol_projectile', PistolProjectilePrefab('green'))
+        self.prefab_manager.set_prefab('shotgun_projectile', ShotgunProjectilePrefab('red'))
+        self.prefab_manager.set_prefab('rifle_projectile', RifleProjectilePrefab('blue'))
         self.prefab_manager.set_prefab('item', ItemPrefab())
         self.prefab_manager.set_prefab('go_next_stage_area', GoNextStageAreaPrefab('orange4', self.game_state_system))
 
