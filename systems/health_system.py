@@ -2,7 +2,7 @@ import random
 from systems.system import *
 
 class ItemType(Enum):
-    ARMOR = 0
+    HEAL = 0
     PISTOL = 1
     SHOTGUN = 2
     RIFLE = 3
@@ -13,9 +13,9 @@ class HealthSystem(System):
             components = self.component_manager.get_components(entity, HealthComponent, ImageSpriteComponent,
                                                                TransformComponent)
             item_type = random.choice(list(ItemType))
-            name = 'armor'
-            if item_type == ItemType.ARMOR:
-                name = 'armor'
+            name = 'heal'
+            if item_type == ItemType.HEAL:
+                name = 'heal'
             elif item_type == ItemType.SHOTGUN:
                 name = 'shotgun'
             elif item_type == ItemType.PISTOL:

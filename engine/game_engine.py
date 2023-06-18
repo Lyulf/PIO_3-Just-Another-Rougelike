@@ -6,7 +6,7 @@ from engine.entity_manager import EntityManager
 from engine.component_manager import ComponentManager
 from engine.system_manager import SystemManager
 from engine.prefab_manager import PrefabManager
-from prefabs.armor_prefab import ArmorPrefab
+from prefabs.heal_prefab import HealPrefab
 from prefabs.shotgun_prefab import ShotgunPrefab
 from prefabs.pistol_prefab import PistolPrefab
 from prefabs.rifle_prefab import RiflePrefab
@@ -49,8 +49,7 @@ class GameEngine(object):
         self.prefab_manager.set_prefab('pistol_projectile', PistolProjectilePrefab('green'))
         self.prefab_manager.set_prefab('shotgun_projectile', ShotgunProjectilePrefab('red'))
         self.prefab_manager.set_prefab('rifle_projectile', RifleProjectilePrefab('blue'))
-        self.prefab_manager.set_prefab('item', ItemPrefab())
-        self.prefab_manager.set_prefab('armor', ArmorPrefab())
+        self.prefab_manager.set_prefab('heal', HealPrefab())
         self.prefab_manager.set_prefab('shotgun', ShotgunPrefab())
         self.prefab_manager.set_prefab('pistol', PistolPrefab())
         self.prefab_manager.set_prefab('rifle', RiflePrefab())

@@ -45,3 +45,6 @@ class RiflePrefab(Prefab):
         except (TypeError, KeyError):
             return
         gun.weapon_type = WeaponType.RIFLE
+        gun.projectile_count = 1
+        gun.spread_angle = 1
+        gun.fire_delay = 110

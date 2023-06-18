@@ -45,6 +45,6 @@ class ShotgunPrefab(Prefab):
         except (TypeError, KeyError):
             return
         gun.weapon_type = WeaponType.SHOTGUN
-        gun.projectile_count = 1
+        gun.projectile_count = 3
         gun.spread_angle = 50
-        gun.fire_delay = 100
+        gun.fire_delay = 350
