@@ -39,10 +39,10 @@ class RenderSystem(System):
             # interpolation
             try:
                 rigidbody = components[RigidbodyComponent]
-                target_position = transform_position + rigidbody.speed * rigidbody.direction * current_dt() / 1000
-                transform_position = transform_position.lerp(target_position, pygame.math.clamp(current_dt() / 50, 0, 1))
             except KeyError:
                 pass
+            else:
+                transform_position = transform_position + rigidbody.speed * rigidbody.direction * current_dt() / 1000 
 
             try:
                 stage_component = components[StageComponent]
