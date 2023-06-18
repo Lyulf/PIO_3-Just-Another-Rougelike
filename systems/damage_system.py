@@ -54,11 +54,10 @@ class DamageSystem(System):
                 self.__do_damage(rhs_entity, lhs_entity, ticks)
 
     def __find_positions_at_minimum_distance(self, lhs_position, lhs_velocity, rhs_position, rhs_velocity):
-        ms_since_last_fixed_update = 50
-        lhs_last_position = lhs_position - ms_since_last_fixed_update * lhs_velocity
-        rhs_last_position = rhs_position - ms_since_last_fixed_update * rhs_velocity
+        lhs_new_position = lhs_position + current_dt() * lhs_velocity
+        rhs_new_position = rhs_position + current_dt() * rhs_velocity
 
-        p = lhs_last_position - rhs_last_position
+        p = lhs_new_position - rhs_new_position
         v = lhs_velocity - rhs_velocity
 
         # time when vectors are perpendicular (minimum distance between objects)
@@ -67,10 +66,10 @@ class DamageSystem(System):
         except:
             return lhs_position, rhs_position
 
-        t = pygame.math.clamp(t, 0, ms_since_last_fixed_update)
+        t = pygame.math.clamp(t, 0, current_dt())
 
-        lhs_position = lhs_last_position + t * lhs_velocity
-        rhs_position = rhs_last_position + t * rhs_velocity
+        lhs_position += t * lhs_velocity
+        rhs_position += t * rhs_velocity
 
         return lhs_position, rhs_position
 

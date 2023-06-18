@@ -21,8 +21,10 @@ from utils.border import get_border
 class GameEngine(object):
     """Class handling game physics."""
 
-    def __init__(self, window_size):
+    def __init__(self, window_size, fps):
         self.window_size = window_size
+        self.fps = fps
+        self.last_update = 0
         self.entity_manager = EntityManager()
         self.component_manager = ComponentManager()
         self.system_manager = SystemManager()
@@ -30,16 +32,16 @@ class GameEngine(object):
         self.current_stage = None
         self.next_stage = None
 
-        self.add_system(0, UserInputSystem)
-        self.add_system(1, EnemyAiSystem)
-        self.add_system(2, MovementSystem)
-        self.add_system(3, DamageSystem)
+        self.add_system(0, DamageSystem)
+        self.add_system(1, UserInputSystem)
+        self.add_system(2, EnemyAiSystem)
+        self.add_system(3, MovementSystem)
         self.add_system(4, CollisionSystem)
         self.add_system(5, HealthSystem)
         self.game_state_system = self.add_system(6, GameStateSystem, self.window_size)
         self.add_system(7, EnemySpawnSystem)
         self.add_system(8, RenderSystem)
-        self.add_system(8, RenderSidebarSystem, self.window_size)
+        self.add_system(9, RenderSidebarSystem, self.window_size)
 
 
         for player_id in range(4):
@@ -176,14 +178,19 @@ class GameEngine(object):
     def update(self):
         """Update systems"""
         ticks = pygame.time.get_ticks()
-        for dead_entity in self.entity_manager.garbage_collect_entities():
-            self.component_manager.remove_components(dead_entity)
+        had_fixed_update = False
         if current_dt() >= 50:
+            for dead_entity in self.entity_manager.garbage_collect_entities():
+                self.component_manager.remove_components(dead_entity)
             for system in self.system_manager.get_systems():
                 if system.enabled:
                     system.on_fixed_update()
             update_dt(0)
-        for system in self.system_manager.get_systems():
-            if system.enabled:
-                system.on_update()
+            had_fixed_update = True
+
+        if ticks - self.last_update >= 1000 / self.fps or had_fixed_update:
+            self.last_update = ticks
+            for system in self.system_manager.get_systems():
+                if system.enabled:
+                    system.on_update()
 

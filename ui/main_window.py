@@ -9,10 +9,9 @@ class MainWindow(object):
     """
 
     @classmethod
-    def __init__(self, window_size, fps):
+    def __init__(self, window_size):
         pygame.init()
         self.window_size = window_size
-        self.fps = fps
         self.screen = None
         self.clock = pygame.time.Clock()
 
@@ -30,11 +29,8 @@ class MainWindow(object):
     def update(self):
         """Displays current frame."""
         pygame.display.flip()
-        dt = self.clock.tick(self.fps)
+        dt = self.clock.tick()
         return dt
-
-    def fill_background(self):
-        self.screen.fill('black')
 
     def close(self):
         """Closes the window."""
