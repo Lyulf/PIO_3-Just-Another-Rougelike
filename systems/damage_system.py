@@ -82,8 +82,6 @@ class DamageSystem(System):
 
         t = pygame.math.clamp(t, 0, ms_since_last_fixed_update)
 
-        print(t)
-
         lhs_position = lhs_last_position + t * lhs_velocity
         rhs_position = rhs_last_position + t * rhs_velocity
 
