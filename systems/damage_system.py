@@ -9,7 +9,7 @@ class DamageSystem(System):
         ticks = pygame.time.get_ticks()
         for idx, lhs_entity in enumerate(entities):
             lhs_components = self.component_manager.get_components(
-                lhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent, HealthComponent, DamageComponent)
+                lhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
             try:
                 lhs_transform = lhs_components[TransformComponent]
                 lhs_rect_hitbox = lhs_components[RectHitboxComponent]
@@ -18,7 +18,7 @@ class DamageSystem(System):
 
             for rhs_entity in entities[idx + 1:]:
                 rhs_components = self.component_manager.get_components(
-                    rhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent, HealthComponent, DamageComponent)
+                    rhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
                 try:
                     rhs_transform = rhs_components[TransformComponent]
                     rhs_rect_hitbox = rhs_components[RectHitboxComponent]
@@ -50,21 +50,8 @@ class DamageSystem(System):
                 if not lhs_rect.colliderect(rhs_rect):
                     continue
 
-                try:
-                    lhs_health = lhs_components[HealthComponent]
-                    rhs_damage = rhs_components[DamageComponent]
-                except KeyError:
-                    pass
-                else:
-                    self.__do_damage(rhs_entity, lhs_health, rhs_damage, ticks)
-
-                try:
-                    rhs_health = rhs_components[HealthComponent]
-                    lhs_damage = lhs_components[DamageComponent]
-                except KeyError:
-                    pass
-                else:
-                    self.__do_damage(lhs_entity, rhs_health, lhs_damage, ticks)
+                self.__do_damage(lhs_entity, rhs_entity, ticks)
+                self.__do_damage(rhs_entity, lhs_entity, ticks)
 
     def __find_positions_at_minimum_distance(self, lhs_position, lhs_velocity, rhs_position, rhs_velocity):
         ms_since_last_fixed_update = 50
@@ -87,9 +74,26 @@ class DamageSystem(System):
 
         return lhs_position, rhs_position
 
-    def __do_damage(self, damage_source_entity: Entity, health_component: HealthComponent, damage_component: DamageComponent, current_ticks: int):
+    def __do_damage(self, damage_source_entity: Entity, target_entity: Entity, current_ticks: int):
+        source_components = self.component_manager.get_components(damage_source_entity, DamageComponent, ImageSpriteComponent)
+        target_components = self.component_manager.get_components(target_entity, HealthComponent)
+        try:
+            damage_component = source_components[DamageComponent]
+            health_component = target_components[HealthComponent]
+        except (TypeError, KeyError):
+            return
+
         if health_component.entity_type in damage_component.ignore_entity_types:
             return
+
+        try:
+            image_sprite = source_components[ImageSpriteComponent]
+        except (TypeError, KeyError):
+            pass
+        else:
+            image_sprite.current_sprite = image_sprite.sprite_sheets['attack']
+
+
         if current_ticks >= health_component.last_damage_time_tick + health_component.grace_period:
             health_component.current_health -= damage_component.damage
             health_component.was_hurt = True
