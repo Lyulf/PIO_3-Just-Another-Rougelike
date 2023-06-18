@@ -142,9 +142,9 @@ class UserInputSystem(System):
             except ValueError:
                 projectile_rigidbody.direction = pygame.Vector2()
 
-        projectile_damage = projectile_components[DamageComponent]
-        try:
-            entity_rect_hitbox = entity_components[RectHitboxComponent]
-        except KeyError:
-            return
-        projectile_damage.ignore_entity_types.append(entity_rect_hitbox.entity_type)
+            projectile_damage = projectile_components[DamageComponent]
+            try:
+                entity_rect_hitbox = entity_components[RectHitboxComponent]
+            except KeyError:
+                return
+            projectile_damage.ignore_entity_types.append(entity_rect_hitbox.entity_type)
