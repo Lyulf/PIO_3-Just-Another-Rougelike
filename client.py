@@ -19,8 +19,8 @@ class Client(object):
     def __init__(self, width, height, fps, custom_keys, ip=None, port=None):
         pygame.init()
         window_size = (width, height)
-        self.window = MainWindow(window_size=window_size, fps=fps)
-        self.engine = GameEngine(window_size=window_size)
+        self.window = MainWindow(window_size=window_size)
+        self.engine = GameEngine(window_size=window_size, fps=fps)
         self.player = None
         self.__running = False
         self.custom_keys = custom_keys
@@ -75,10 +75,8 @@ class Client(object):
 
     def update(self):
         """Calls on_update in systems"""
-        self.window.fill_background()
         self.engine.update()
         dt = self.window.update()
-        ticks = pygame.time.get_ticks()
         update_dt(current_dt() + dt)
 
     def shutdown(self):

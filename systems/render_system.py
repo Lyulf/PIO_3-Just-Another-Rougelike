@@ -5,6 +5,7 @@ from ui.floating_button_hint import *
 class RenderSystem(System):
     def on_update(self):
         surface = pygame.display.get_surface()
+        surface.fill('black')
         rects = []
         sprites = []
         hints = []
