@@ -46,5 +46,5 @@ class PistolPrefab(Prefab):
             return
         gun.weapon_type = WeaponType.PISTOL
         gun.projectile_count = 1
-        gun.spread_angle = 1
-        gun.fire_delay = 300
+        gun.spread_angle = 0
+        gun.fire_delay = 250

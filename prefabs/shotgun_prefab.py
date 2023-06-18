@@ -46,5 +46,5 @@ class ShotgunPrefab(Prefab):
             return
         gun.weapon_type = WeaponType.SHOTGUN
         gun.projectile_count = 3
-        gun.spread_angle = 50
-        gun.fire_delay = 350
+        gun.spread_angle = 30
+        gun.fire_delay = 700
