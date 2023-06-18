@@ -2,16 +2,19 @@ import ui.spritesheet
 
 from prefabs.prefab import *
 from utils.resources import get_sprite
+from entities.entity import Entity
+from components.health_component import HealthComponent
+from components.weapon_component import WeaponComponent
+from components.weapon_component import WeaponType
 
 
-
-class ItemPrefab(Prefab):
+class RiflePrefab(Prefab):
 
     def __init__(self):
         super().__init__()
         self.sprites = {
             'items': {
-                'upgrade': get_sprite("resources/items/upgrade.png", True),
+                'upgrade': get_sprite("resources/items/rifle.png", True),
             },
         }
 
@@ -26,9 +29,22 @@ class ItemPrefab(Prefab):
             'upgrade': ui.spritesheet.SpriteSheet(sprites['upgrade'], 129, 129, 1, 0.5, False),
         }
         offset = pygame.Vector2(0, 0)
+
         sprite = ImageSpriteComponent(rect.copy(), anchor.copy(), sprite_sheets, 'upgrade', offset)
         self._add_component(components, sprite)
         item_component = ItemComponent()
         self._add_component(components, item_component)
-
+        interaction_component = InteractionComponent(rect, anchor, self.pick_up_item)
+        self._add_component(components, interaction_component)
         return components
+    def pick_up_item(self, player_entity, item_entity):
+        item_entity.is_alive = False
+        components = self.component_manager.get_components(player_entity, WeaponComponent)
+        try:
+            gun = components[WeaponComponent]
+        except (TypeError, KeyError):
+            return
+        gun.weapon_type = WeaponType.RIFLE
+        gun.projectile_count = 1
+        gun.spread_angle = 0
+        gun.fire_delay = 110
