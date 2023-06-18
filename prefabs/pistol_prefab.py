@@ -45,3 +45,4 @@ class PistolPrefab(Prefab):
         except (TypeError, KeyError):
             return
         gun.weapon_type = WeaponType.PISTOL
+        gun.projectile_count = 1
