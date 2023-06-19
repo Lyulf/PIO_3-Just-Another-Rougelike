@@ -5,7 +5,7 @@ from utils.resources import get_sprite
 import random
 
 class PlayerPrefab(Prefab):
-    SPEED = 1000
+    SPEED = 600
     WIDTH = 50
     HEIGHT = 30
     COLOR = pygame.Color(246, 187, 148)
