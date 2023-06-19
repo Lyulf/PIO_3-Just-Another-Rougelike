@@ -12,7 +12,7 @@ class PrefabManager(object):
         return self.prefabs[name]
 
     def set_prefab(self, name, prefab):
-        prefab.late_init(self.entity_manager, self.component_manager)
+        prefab.late_init(self.entity_manager, self.component_manager, self)
         self.prefabs[name] = prefab
 
     def spawn(self, prefab_name, position):

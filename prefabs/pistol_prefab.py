@@ -37,13 +37,23 @@ class PistolPrefab(Prefab):
         interaction_component = InteractionComponent(rect, anchor, self.pick_up_item)
         self._add_component(components, interaction_component)
         return components
+
     def pick_up_item(self, player_entity, item_entity):
         item_entity.is_alive = False
-        components = self.component_manager.get_components(player_entity, WeaponComponent)
+        components = self.component_manager.get_components(player_entity, TransformComponent, WeaponComponent)
         try:
+            transform = components[TransformComponent]
             gun = components[WeaponComponent]
         except (TypeError, KeyError):
             return
+
+        if gun.weapon_type == WeaponType.PISTOL:
+            self.prefab_manager.spawn('pistol', transform.position)
+        elif gun.weapon_type == WeaponType.RIFLE:
+            self.prefab_manager.spawn('rifle', transform.position)
+        elif gun.weapon_type == WeaponType.SHOTGUN:
+            self.prefab_manager.spawn('shotgun', transform.position)
+
         gun.weapon_type = WeaponType.PISTOL
         gun.projectile_count = 1
         gun.spread_angle = 0
