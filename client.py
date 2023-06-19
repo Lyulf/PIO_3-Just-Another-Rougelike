@@ -3,7 +3,6 @@ from entities import *
 from ui.main_window import MainWindow
 from utils.errors.user_error import UserError
 from utils.layers import Layers
-from components.controls_component import Controls, ControlsComponent
 from components.player_component import PlayerComponent
 from components.transform_component import TransformComponent
 from components.interaction_hint_component import InteractionHint
@@ -11,21 +10,18 @@ from systems.user_input_system import UserInputSystem
 from utils.delta_time import *
 
 import pygame
-import socket
 import sys
 
 class Client(object):
     """Class handling all gameplay logic."""
-    def __init__(self, width, height, fps, custom_keys, ip=None, port=None):
+    def __init__(self, width, height, fps, custom_keys, is_multiplayer=False):
         pygame.init()
         window_size = (width, height)
         self.window = MainWindow(window_size=window_size)
-        self.engine = GameEngine(window_size=window_size, fps=fps)
-        self.player = None
+        self.engine = GameEngine(window_size=window_size, fps=fps, keyboard_controls=custom_keys)
         self.__running = False
         self.custom_keys = custom_keys
-        self.ip = ip
-        self.port = port
+        self.is_multiplayer = is_multiplayer
 
     def run(self):
         """Starts the game."""
@@ -41,16 +37,11 @@ class Client(object):
     def init(self):
         """Initialization before gameplay loop."""
         self.window.show()
-        self.player = self.engine.spawn_players(1)[0]
-        controls = ControlsComponent(self.custom_keys)
-        self.engine.component_manager.add_component(self.player, controls)
-        player_component = self.engine.component_manager.get_component(self.player, PlayerComponent)
-        player_component.is_current_player = True
-        floating_button_hint = self.engine.entity_manager.create_entity()
-        hint_transform = TransformComponent()
-        self.engine.component_manager.add_component(floating_button_hint, hint_transform)
-        hint_component = InteractionHint(self.player, chr(controls.custom_keys[Controls.USE]).upper(), True)
-        self.engine.component_manager.add_component(floating_button_hint, hint_component)
+        self.engine.add_player(keyboard_buttons=self.custom_keys)
+
+        if self.is_multiplayer:
+            for joystick_id in range(pygame.joystick.get_count()):
+                self.engine.add_player(joystick=pygame.joystick.Joystick(joystick_id))
 
         self.engine.create()
 
@@ -69,6 +60,11 @@ class Client(object):
                 return
             if event.type == pygame.KEYDOWN:
                 keys_down.append(event.key)
+            elif self.is_multiplayer and event.type == pygame.JOYDEVICEADDED:
+                self.engine.add_player(joystick=pygame.joystick.Joystick(event.device_index))
+            elif event.type == pygame.JOYBUTTONDOWN:
+                keys_down.append(event.button)
+
         keys = pygame.key.get_pressed()
         user_inputs_system.held_keys = keys
         user_inputs_system.keys_down.extend(keys_down)

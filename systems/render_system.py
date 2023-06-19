@@ -9,6 +9,7 @@ class RenderSystem(System):
         rects = []
         sprites = []
         hints = []
+        crosshairs = []
 
         camera = None
         for entity in self.entity_manager.get_entities():
@@ -29,7 +30,8 @@ class RenderSystem(System):
                 ImageSpriteComponent,
                 RectSpriteComponent,
                 InteractableArea,
-                InteractionHint)
+                InteractionHint,
+                ControlsComponent)
             try:
                 transform = components[TransformComponent].projection(camera_transform)
                 transform_position = transform.position
@@ -62,6 +64,9 @@ class RenderSystem(System):
 
             try:
                 interactable_hint = components[InteractionHint]
+                if not interactable_hint.owner.is_alive:
+                    interactable_hint.is_alive = False
+                    continue
                 if self.systems_manager.get_system(UserInputSystem).enabled:
                     hints.append((interactable_hint, transform_position))
                 continue
@@ -105,6 +110,17 @@ class RenderSystem(System):
             except KeyError:
                 pass
 
+            try:
+                controls = components[ControlsComponent]
+            except KeyError:
+                pass
+            else:
+                if controls.crosshair_direction != pygame.Vector2():
+                    rect = pygame.Rect(0, 0, 30, 30)
+                    rect.move_ip(transform_position - rect.center)
+                    rect.move_ip(controls.crosshair_direction * 100)
+                    crosshairs.append((controls.sprite_sheet, rect))
+
         for rect, color in sorted(rects, key=lambda x: x[0].y):
             pygame.draw.rect(surface, color, rect)
 
@@ -113,4 +129,7 @@ class RenderSystem(System):
 
         for hint, position in hints:
             hint.draw(surface, position)
+
+        for crosshair, rect in crosshairs:
+            crosshair.animate(surface, rect)
 

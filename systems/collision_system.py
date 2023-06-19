@@ -9,6 +9,9 @@ class CollisionSystem(System):
             lhs_components = self.component_manager.get_components(
                 lhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
             try:
+                lhs_rect_hitbox = lhs_components[RectHitboxComponent]
+                if not lhs_rect_hitbox.enabled:
+                    continue
                 self.__collide_border(lhs_entity, lhs_components)
                 if not lhs_entity.is_alive:
                     continue
@@ -18,6 +21,9 @@ class CollisionSystem(System):
                 rhs_components = self.component_manager.get_components(
                     rhs_entity, TransformComponent, RigidbodyComponent, RectHitboxComponent)
                 try:
+                    rhs_rect_hitbox = rhs_components[RectHitboxComponent]
+                    if not rhs_rect_hitbox.enabled:
+                        continue
                     self.__collide_entity(lhs_entity, lhs_components, rhs_entity, rhs_components)
                 except (TypeError, KeyError):
                     continue

@@ -11,7 +11,7 @@ class HealthSystem(System):
     def on_fixed_update(self):
         for entity in self.entity_manager.get_entities():
             components = self.component_manager.get_components(entity, HealthComponent, ImageSpriteComponent,
-                                                               TransformComponent)
+                                                               TransformComponent, ControlsComponent)
             item_type = random.choice(list(ItemType))
             name = 'heal'
             if item_type == ItemType.HEAL:
@@ -40,6 +40,13 @@ class HealthSystem(System):
                     entity.is_alive = False
                     continue
             elif health.was_hurt:
+                try:
+                    controls = components[ControlsComponent]
+                except KeyError:
+                    pass
+                else:
+                    if controls.joystick:
+                        controls.joystick.rumble(1, 0, 200)
                 try:
                     image_sprite.current_sprite = image_sprite.sprite_sheets['hurt']
                 except KeyError:

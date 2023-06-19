@@ -79,8 +79,8 @@ def play():
                     client = Client(width=width, height=height, fps=fps_value[fps_choice], custom_keys=controls_button_value)
                     client.run()
                 if play_multiplayer.checkForInput(play_mouse_pos):
-                    print('Multiplayer work in progress...')
-                    playMultiplayer()
+                    client = Client(width=width, height=height, fps=fps_value[fps_choice], custom_keys=controls_button_value, is_multiplayer=True)
+                    client.run()
         pygame.display.update()
 
 

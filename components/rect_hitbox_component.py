@@ -9,3 +9,4 @@ class RectHitboxComponent(Component):
         self.anchor = anchor
         self.entity_type = entity_type
         self.ignore_entity_types = ignore_entity_types if ignore_entity_types is not None else []
+        self.enabled = True

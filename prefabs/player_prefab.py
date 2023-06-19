@@ -12,9 +12,10 @@ class PlayerPrefab(Prefab):
     SPRITE_OFFSET = pygame.Vector2(0, -35)
     GRACE_PERIOD = 0.2
 
-    def __init__(self, id):
+    def __init__(self, player_id, controls, joystick = None):
         super().__init__()
-        self.id = id
+        self.player_id = player_id
+        self.controls = controls
         self.old_color = self.COLOR
         self.new_color = pygame.Color(random.randint(0, 255), random.randint(0, 255), random.randint(0, 255))
         self.sprites = {
@@ -28,14 +29,15 @@ class PlayerPrefab(Prefab):
                 'death_sprite': get_sprite("resources/playerModel/death.png", False),
             },
             'health_bar': [
-                get_sprite(f"resources/HP_Bar/{id}.png", True) for id in range(11)
+                get_sprite(f"resources/HP_Bar/{sprite_id}.png", True) for sprite_id in range(11)
             ]
         }
+        self.joystick = joystick
 
     def create(self, position):
         components = super().create(position)
 
-        rigidbody = RigidbodyComponent(self.SPEED, CollisionType.DYNAMIC)
+        rigidbody = RigidbodyComponent(self.SPEED, CollisionType.DYNAMIC, pygame.Vector2(0, -1))
         self._add_component(components, rigidbody)
 
         player_rect = pygame.Rect(0, 0, self.WIDTH, self.HEIGHT)
@@ -61,7 +63,7 @@ class PlayerPrefab(Prefab):
         health = HealthComponent(10, EntityType.PLAYER, self.GRACE_PERIOD)
         self._add_component(components, health)
 
-        player_component = PlayerComponent(False, self.id)
+        player_component = PlayerComponent(True, self.player_id)
         self._add_component(components, player_component)
 
         sidebar_health_bar = PlayerSidebarHealthBarComponent(self.sprites['health_bar'])
@@ -69,5 +71,8 @@ class PlayerPrefab(Prefab):
 
         weapon = WeaponComponent(1, 0, 250, WeaponType.PISTOL)
         self._add_component(components, weapon)
+
+        controls_component = ControlsComponent(self.controls, self.new_color, self.joystick)
+        self._add_component(components, controls_component)
 
         return components

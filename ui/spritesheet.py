@@ -59,7 +59,8 @@ class SpriteSheet:
         # Draw the sprite on the surface at the given position
         surface.blit(sprite, (sprite_x, sprite_y))
 
-    def change_color(self, image, old_color, new_color):
+    @staticmethod
+    def change_color(image, old_color, new_color):
         """Change a specific color in an image to a new color."""
         width, height = image.get_size()
 

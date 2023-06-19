@@ -6,6 +6,8 @@ import random
 
 
 class UserInputSystem(System):
+    JOYSTICK_DEADZONE = 0.1
+
     def on_create(self):
         self.keys_down = []
         self.held_keys = {}
@@ -20,19 +22,29 @@ class UserInputSystem(System):
             except (TypeError, KeyError):
                 continue
 
+            if not controls.enabled:
+                continue
+
             direction = pygame.Vector2()
-            if self.held_keys[controls.custom_keys[Controls.UP]]:
-                direction.y -= 1
-            if self.held_keys[controls.custom_keys[Controls.DOWN]]:
-                direction.y += 1
-            if self.held_keys[controls.custom_keys[Controls.LEFT]]:
-                direction.x -= 1
-            if self.held_keys[controls.custom_keys[Controls.RIGHT]]:
-                direction.x += 1
-            try:
-                rigidbody.direction = direction.normalize()
-            except ValueError:
-                rigidbody.direction = pygame.Vector2()
+            if controls.joystick:
+                direction.x = controls.joystick.get_axis(0)
+                direction.y = controls.joystick.get_axis(1)
+                if direction.magnitude() < self.JOYSTICK_DEADZONE:
+                    direction = pygame.Vector2()
+            else:
+                if self.held_keys[controls.custom_keys[Controls.UP]]:
+                    direction.y -= 1
+                if self.held_keys[controls.custom_keys[Controls.DOWN]]:
+                    direction.y += 1
+                if self.held_keys[controls.custom_keys[Controls.LEFT]]:
+                    direction.x -= 1
+                if self.held_keys[controls.custom_keys[Controls.RIGHT]]:
+                    direction.x += 1
+                try:
+                    direction.normalize_ip()
+                except ValueError:
+                    direction = pygame.Vector2()
+            rigidbody.direction = direction
 
     def on_update(self):
         camera = None
@@ -64,14 +76,36 @@ class UserInputSystem(System):
                 rigidbody = components[RigidbodyComponent]
             except (TypeError, KeyError):
                 continue
-            try:
+
+            if not controls.enabled:
+                continue
+
+            if controls.joystick:
+                axis = pygame.Vector2()
+                axis.x = controls.joystick.get_axis(2)
+                axis.y = controls.joystick.get_axis(3)
+                if axis.magnitude() < self.JOYSTICK_DEADZONE:
+                    axis = pygame.Vector2()
+                controls.crosshair_direction = axis
+                try:
+                    if controls.joystick.get_button(10):
+                        self.__spawn_projectile(entity, transform.position + axis)
+                except IndexError:
+                    pass
+            else:
                 mouse_pos = pygame.mouse.get_pos()
                 mouse_vector = pygame.Vector2(*mouse_pos) + camera_position
-                pygame.event.get()
-                if pygame.mouse.get_pressed()[0]:
-                    self.__spawn_projectile(entity, mouse_vector)
-            except IndexError:
-                pass
+                controls.crosshair_direction = mouse_vector - transform.position
+                try:
+                    controls.crosshair_direction.clamp_magnitude_ip(100)
+                    controls.crosshair_direction /= 100
+                except ValueError:
+                    controls.crosshair_direction = pygame.Vector2()
+                try:
+                    if pygame.mouse.get_pressed()[0]:
+                        self.__spawn_projectile(entity, mouse_vector)
+                except IndexError:
+                    pass
 
             min_distance = math.inf
             current_interaction = None
@@ -101,8 +135,13 @@ class UserInputSystem(System):
                 keys_down = self.keys_down.copy()
                 while True:
                     key = keys_down.pop(0)
-                    if key == controls.custom_keys[Controls.USE] and current_interaction:
-                        current_interaction(entity, current_interactable_entity)
+                    if current_interaction:
+                        if controls.joystick:
+                            if key == 0:
+                                current_interaction(entity, current_interactable_entity)
+                        else:
+                            if key == controls.custom_keys[Controls.USE]:
+                                current_interaction(entity, current_interactable_entity)
             except IndexError:
                 pass
         self.keys_down = []
@@ -140,7 +179,8 @@ class UserInputSystem(System):
                 projectile_rigidbody.direction.rotate_ip(random_spread)
                 projectile_rigidbody.direction.normalize_ip()
             except ValueError:
-                projectile_rigidbody.direction = pygame.Vector2()
+                projectile_rigidbody.direction = pygame.Vector2(0, 1)
+                projectile_rigidbody.direction.rotate_ip(random_spread)
 
             projectile_damage = projectile_components[DamageComponent]
             try:

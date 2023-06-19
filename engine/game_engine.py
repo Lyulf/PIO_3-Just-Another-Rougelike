@@ -21,7 +21,7 @@ from utils.border import get_border
 class GameEngine(object):
     """Class handling game physics."""
 
-    def __init__(self, window_size, fps):
+    def __init__(self, window_size, fps, keyboard_controls):
         self.window_size = window_size
         self.fps = fps
         self.last_update = 0
@@ -42,10 +42,6 @@ class GameEngine(object):
         self.add_system(7, EnemySpawnSystem)
         self.add_system(8, RenderSystem)
         self.add_system(9, RenderSidebarSystem, self.window_size)
-
-
-        for player_id in range(4):
-            self.prefab_manager.set_prefab(f'player{player_id + 1}', PlayerPrefab(player_id))
 
         self.prefab_manager.set_prefab('demon', DemonPrefab())
         self.prefab_manager.set_prefab('pistol_projectile', PistolProjectilePrefab('green'))
@@ -118,6 +114,9 @@ class GameEngine(object):
         image_sprite = ImageSpriteComponent(rect, anchor, sprites, 'idle')
         self.component_manager.add_component(self.next_stage, image_sprite)
 
+    def add_player(self, *, joystick = None, keyboard_buttons = None):
+        self.game_state_system.add_player(joystick=joystick, keyboard_buttons=keyboard_buttons)
+
     def create(self):
         for system in self.system_manager.get_systems():
             system.on_create()
@@ -169,7 +168,14 @@ class GameEngine(object):
         return opponents
 
     def __create_player(self, position, id):
-        return self.prefab_manager.spawn(f'player{id + 1}', position)
+        player = self.prefab_manager.spawn(f'player{id + 1}', position)
+        controls_component = self.component_manager.get_component(player, ControlsComponent)
+        floating_button_hint = self.entity_manager.create_entity()
+        hint_transform = TransformComponent()
+        self.component_manager.add_component(floating_button_hint, hint_transform)
+        hint_component = InteractionHint(player, chr(controls_component.custom_keys[Controls.USE]).upper(), True)
+        self.component_manager.add_component(floating_button_hint, hint_component)
+        return player
 
     def __create_opponent(self, position):
         return self.prefab_manager.spawn('demon', position)
